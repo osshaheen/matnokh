@@ -14,16 +14,14 @@ use Spatie\Permission\PermissionRegistrar;
 /**
  * Resets (or creates) a dashboard admin account.
  *
- *   php artisan admin:reset-password
- *   php artisan admin:reset-password ops@wassilha.ps --password="MyPass123"
- *   php artisan admin:reset-password --random
+ *   php artisan admin:reset-password                                    # random password, printed once
+ *   php artisan admin:reset-password ops@wassilha.ps --password="…"     # a password you choose
  */
 class ResetAdminPassword extends Command
 {
     protected $signature = 'admin:reset-password
         {email? : Account email (defaults to the seeded admin)}
-        {--password= : Password to set (defaults to the seeder value)}
-        {--random : Generate a random 12-character password instead}';
+        {--password= : Password to set (default: a random one is generated)}';
 
     protected $description = 'إعادة تعيين كلمة مرور مدير اللوحة (وإنشاء الحساب إن لم يكن موجوداً)';
 
@@ -31,11 +29,8 @@ class ResetAdminPassword extends Command
     {
         $email = $this->argument('email') ?: env('ADMIN_EMAIL', AdminSeeder::EMAIL);
 
-        $password = match (true) {
-            (bool) $this->option('random') => Str::password(12, symbols: false),
-            (bool) $this->option('password') => (string) $this->option('password'),
-            default => env('ADMIN_PASSWORD', AdminSeeder::PASSWORD),
-        };
+        // never fall back to a value committed to this (public) repository
+        $password = (string) ($this->option('password') ?: Str::password(16, symbols: false));
 
         if (strlen($password) < 8) {
             $this->error('كلمة المرور يجب أن تكون 8 أحرف على الأقل.');
