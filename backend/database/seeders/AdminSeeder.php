@@ -10,6 +10,10 @@ use Spatie\Permission\Models\Role;
 
 class AdminSeeder extends Seeder
 {
+    /** Overridable per-environment with ADMIN_EMAIL / ADMIN_PASSWORD in .env */
+    public const EMAIL = 'admin@wassilha.ps';
+    public const PASSWORD = 'Wassilha@2026';
+
     public function run(): void
     {
         // permission modules for the admin dashboard (وصلها)
@@ -24,9 +28,14 @@ class AdminSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $admin->syncPermissions(Permission::all());
 
-        $user = User::firstOrCreate(
-            ['email' => 'admin@wassilha.ps'],
-            ['name' => 'مدير النظام', 'password' => Hash::make('wassilha123'), 'is_active' => true]
+        // updateOrCreate so re-seeding also resets a forgotten password
+        $user = User::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL', self::EMAIL)],
+            [
+                'name' => 'مدير النظام',
+                'password' => Hash::make(env('ADMIN_PASSWORD', self::PASSWORD)),
+                'is_active' => true,
+            ]
         );
         $user->assignRole($admin);
     }

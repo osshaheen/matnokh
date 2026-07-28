@@ -3,7 +3,10 @@ export function useAuth() {
   const user = useState<any>('user', () => null)
   const abilities = useState<string[]>('abilities', () => [])
   const roles = useState<string[]>('roles', () => [])
-  const sys = useState('sys', () => ({ deletion_enabled: true, trash_enabled: true, restore_enabled: true }))
+  // mirrors GET /settings — the safety toggles gate `can()` below
+  const sys = useState<Record<string, any>>('sys', () => ({
+    deletion_enabled: true, trash_enabled: true, restore_enabled: true,
+  }))
   const config = useRuntimeConfig()
   const api = (p: string) => `${config.public.apiBase}${p}`
 
@@ -33,6 +36,7 @@ export function useAuth() {
     token.value = res.token; user.value = res.user
     abilities.value = res.user?.abilities ?? []; roles.value = res.user?.roles ?? []
     if (import.meta.client) localStorage.setItem('ws_token', res.token)
+    await loadSettings()
     return res
   }
   async function fetchMe() {
