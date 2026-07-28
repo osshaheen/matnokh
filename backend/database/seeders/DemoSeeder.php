@@ -246,11 +246,12 @@ class DemoSeeder extends Seeder
             ]);
         }
 
-        foreach (Driver::where('balance', '>', 150)->take(4)->get() as $i => $driver) {
+        // half the balance, so the demo always has driver requests to act on
+        foreach (Driver::where('balance', '>', 40)->take(4)->get() as $i => $driver) {
             Withdraw::create([
                 'requester_type' => Driver::class,
                 'requester_id' => $driver->id,
-                'amount' => 150,
+                'amount' => round((float) $driver->balance / 2, 2),
                 'method' => 'bank',
                 'account_name' => $driver->name,
                 'account_number' => 'PS'.str_pad((string) (9000 + $i), 8, '0', STR_PAD_LEFT),

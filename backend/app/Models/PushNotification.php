@@ -10,6 +10,13 @@ class PushNotification extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'status' => 'draft',
+        'audience' => 'all',
+        'sent_count' => 0,
+    ];
     protected $casts = [
         'target_ids' => 'array',
         'sent_at' => 'datetime',

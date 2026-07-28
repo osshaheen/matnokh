@@ -11,6 +11,12 @@ class Article extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'is_published' => false,
+        'views' => 0,
+    ];
     protected $casts = [
         'is_published' => 'boolean',
         'published_at' => 'datetime',

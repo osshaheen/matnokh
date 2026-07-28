@@ -17,6 +17,23 @@ class Order extends Model
     public const CLOSED = ['delivered', 'canceled', 'returned'];
 
     protected $guarded = [];
+
+    /**
+     * Mirrors the column defaults so a freshly created model reports the same
+     * values the database stores — otherwise `create()` hands back nulls for
+     * anything the request left out.
+     */
+    protected $attributes = [
+        'status' => 'pending',
+        'payment_method' => 'cash',
+        'is_paid' => false,
+        'items_total' => 0,
+        'delivery_fee' => 0,
+        'commission' => 0,
+        'discount' => 0,
+        'total' => 0,
+    ];
+
     protected $casts = [
         'is_paid' => 'boolean',
         'items_total' => 'decimal:2',

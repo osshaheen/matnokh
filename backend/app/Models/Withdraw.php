@@ -14,6 +14,12 @@ class Withdraw extends Model
     public const REQUESTERS = ['driver' => Driver::class, 'merchant' => Merchant::class];
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'status' => 'pending',
+        'method' => 'bank',
+    ];
     protected $casts = [
         'amount' => 'decimal:2',
         'processed_at' => 'datetime',
