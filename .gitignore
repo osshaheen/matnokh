@@ -1,0 +1,15 @@
+# deps & build
+backend/vendor/
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+# env & secrets (kept on server, never tracked)
+backend/.env
+frontend/.env
+# laravel runtime
+backend/storage/*.key
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+# misc
+.DS_Store
+_theme/

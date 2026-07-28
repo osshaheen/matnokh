@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: wassilha-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wassilha
+      MYSQL_USER: wassilha
+      MYSQL_PASSWORD: wassilha_pass
+      MYSQL_ROOT_PASSWORD: wassilha_root
+    volumes:
+      - wassilha_db:/var/lib/mysql
+    networks: [wassilha]
+
+  backend:
+    build: ./backend
+    container_name: wassilha-backend
+    restart: unless-stopped
+    env_file: ./backend/.env
+    ports:
+      - "8087:8000"
+    depends_on: [db]
+    networks: [wassilha]
+
+  frontend:
+    build: ./frontend
+    container_name: wassilha-frontend
+    restart: unless-stopped
+    ports:
+      - "3007:3000"
+    depends_on: [backend]
+    networks: [wassilha]
+
+volumes:
+  wassilha_db:
+networks:
+  wassilha:
