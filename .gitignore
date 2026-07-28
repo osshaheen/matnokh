@@ -10,6 +10,10 @@ frontend/.env
 backend/storage/*.key
 backend/storage/logs/*.log
 backend/bootstrap/cache/*.php
+# local sqlite scratch databases (tests run in memory; manual runs leave a file)
+backend/*.sqlite
+backend/database/*.sqlite
+backend/wassilha
 # misc
 .DS_Store
 _theme/

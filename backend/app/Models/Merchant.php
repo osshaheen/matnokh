@@ -11,6 +11,14 @@ class Merchant extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'status' => 'pending',
+        'is_active' => true,
+        'commission_rate' => 10,
+        'balance' => 0,
+    ];
     protected $casts = [
         'is_active' => 'boolean',
         'commission_rate' => 'decimal:2',

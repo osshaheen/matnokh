@@ -10,6 +10,13 @@ class City extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'is_active' => true,
+        'delivery_fee' => 0,
+        'sort' => 0,
+    ];
     protected $casts = ['is_active' => 'boolean', 'delivery_fee' => 'decimal:2'];
 
     public function merchants() { return $this->hasMany(Merchant::class); }

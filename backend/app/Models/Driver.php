@@ -11,6 +11,15 @@ class Driver extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'status' => 'pending',
+        'is_available' => false,
+        'vehicle_type' => 'motorcycle',
+        'balance' => 0,
+        'rating' => 5,
+    ];
     protected $casts = [
         'is_available' => 'boolean',
         'balance' => 'decimal:2',

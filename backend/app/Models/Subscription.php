@@ -11,6 +11,12 @@ class Subscription extends Model
     use SoftDeletes, Auditable;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'status' => 'active',
+        'price' => 0,
+    ];
     protected $casts = [
         'price' => 'decimal:2',
         'starts_at' => 'date',

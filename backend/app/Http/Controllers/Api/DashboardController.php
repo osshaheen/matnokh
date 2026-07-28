@@ -73,11 +73,11 @@ class DashboardController extends Controller
 
         $rows = Order::selectRaw('DATE(created_at) as day, count(*) as orders, sum(total) as revenue')
             ->where('created_at', '>=', $from)
-            ->groupBy('day')->pluck(null, 'day');
+            ->groupBy('day')->get()->keyBy('day');
 
         return collect(range(0, $days - 1))->map(function (int $i) use ($from, $rows) {
             $day = $from->copy()->addDays($i)->toDateString();
-            $row = $rows[$day] ?? null;
+            $row = $rows->get($day);
 
             return [
                 'day' => $day,

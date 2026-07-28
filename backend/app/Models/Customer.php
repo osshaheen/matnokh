@@ -10,6 +10,11 @@ class Customer extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    /** Mirrors the column defaults so `create()` doesn't hand back nulls. */
+    protected $attributes = [
+        'is_active' => true,
+    ];
     protected $casts = ['is_active' => 'boolean'];
 
     public function city() { return $this->belongsTo(City::class); }
