@@ -10,11 +10,38 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      # every run so far died within seconds with unreadable logs — this names
+      # the missing piece instead of failing anonymously inside the ssh action
+      - name: Preflight — required secrets are present
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          missing=0
+          for name in SSH_HOST SSH_USER SSH_KEY; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Repository secret $name is not set (Settings → Secrets and variables → Actions)"
+              missing=1
+            else
+              echo "$name is set"
+            fi
+          done
+          case "${SSH_KEY}" in
+            "") ;;
+            *"BEGIN "*"PRIVATE KEY"*) echo "SSH_KEY looks like a PEM private key" ;;
+            *) echo "::error::SSH_KEY is not a private key — paste the whole key file, BEGIN/END lines included"; missing=1 ;;
+          esac
+          exit $missing
+
       - name: Deploy over SSH to production
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          # default to 22 so an unset SSH_PORT secret can't fail the action
+          port: ${{ secrets.SSH_PORT || 22 }}
+          command_timeout: 20m
+          script_stop: true
           script: /home/administrator/deploy.sh wassilha
