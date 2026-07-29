@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\TrashController;
 use App\Http\Controllers\Api\WithdrawController;
+use App\Http\Controllers\Api\MerchantAuthController;
 use App\Http\Controllers\Api\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -137,4 +138,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('trash/{type}/empty', [TrashController::class, 'empty'])->middleware('perm:trash.delete');
     Route::post('trash/{type}/{id}/restore', [TrashController::class, 'restore'])->middleware('perm:trash.update');
     Route::delete('trash/{type}/{id}', [TrashController::class, 'forceDelete'])->middleware('perm:trash.delete');
+});
+
+
+// ═══════════════════════ MERCHANT APP (تطبيق التاجر) ═══════════════════════
+Route::prefix('merchant')->group(function () {
+    // public — the app reads the active method then shows the right form
+    Route::get('login-method', [MerchantAuthController::class, 'method']);
+    Route::post('request-otp', [MerchantAuthController::class, 'requestOtp']);
+    Route::post('login', [MerchantAuthController::class, 'login']);
+
+    // everything below is scoped to the authenticated merchant's own store
+    Route::middleware(['auth:sanctum', 'merchant'])->group(function () {
+        Route::post('logout', [MerchantAuthController::class, 'logout']);
+        // Phase B modules (store/branches/sections/products/orders/wallet/dashboard) mount here
+    });
 });

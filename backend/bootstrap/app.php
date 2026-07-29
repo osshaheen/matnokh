@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'perm' => \App\Http\Middleware\EnsurePermission::class,
+            'merchant' => \App\Http\Middleware\EnsureMerchant::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

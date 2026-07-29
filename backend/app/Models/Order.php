@@ -11,10 +11,10 @@ class Order extends Model
     use SoftDeletes, Auditable;
 
     /** Lifecycle states, in the order the dashboard timeline renders them. */
-    public const STATUSES = ['pending', 'accepted', 'picked_up', 'on_the_way', 'delivered', 'canceled', 'returned'];
+    public const STATUSES = ['pending', 'accepted', 'preparing', 'ready', 'picked_up', 'on_the_way', 'delivered', 'canceled', 'rejected', 'returned'];
 
     /** States that count as finished — no further transitions offered. */
-    public const CLOSED = ['delivered', 'canceled', 'returned'];
+    public const CLOSED = ['delivered', 'canceled', 'rejected', 'returned'];
 
     protected $guarded = [];
 
@@ -75,6 +75,8 @@ class Order extends Model
 
     public function customer() { return $this->belongsTo(Customer::class); }
     public function merchant() { return $this->belongsTo(Merchant::class); }
+    public function branch() { return $this->belongsTo(Branch::class); }
+    public function items() { return $this->hasMany(OrderItem::class); }
     public function driver() { return $this->belongsTo(Driver::class); }
     public function city() { return $this->belongsTo(City::class); }
     public function service() { return $this->belongsTo(Service::class); }

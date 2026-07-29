@@ -22,6 +22,8 @@ class Setting extends Model
         'min_withdraw_amount' => 100,
         'auto_assign_driver' => false,
         'orders_enabled' => true,
+        // merchant/partner login method the admin selects: phone_password | email_password | phone_otp
+        'merchant_login_method' => 'phone_password',
         // safety switches consumed by the frontend `can()` helper
         'deletion_enabled' => true,
         'trash_enabled' => true,
