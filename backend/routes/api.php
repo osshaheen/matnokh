@@ -20,6 +20,14 @@ use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\TrashController;
 use App\Http\Controllers\Api\WithdrawController;
 use App\Http\Controllers\Api\MerchantAuthController;
+use App\Http\Controllers\Api\Merchant\StoreController as MStoreController;
+use App\Http\Controllers\Api\Merchant\BranchController as MBranchController;
+use App\Http\Controllers\Api\Merchant\SectionController as MSectionController;
+use App\Http\Controllers\Api\Merchant\ProductController as MProductController;
+use App\Http\Controllers\Api\Merchant\OrderController as MOrderController;
+use App\Http\Controllers\Api\Merchant\WalletController as MWalletController;
+use App\Http\Controllers\Api\Merchant\DashboardController as MDashboardController;
+
 use App\Http\Controllers\Api\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -151,6 +159,36 @@ Route::prefix('merchant')->group(function () {
     // everything below is scoped to the authenticated merchant's own store
     Route::middleware(['auth:sanctum', 'merchant'])->group(function () {
         Route::post('logout', [MerchantAuthController::class, 'logout']);
-        // Phase B modules (store/branches/sections/products/orders/wallet/dashboard) mount here
+
+        Route::get('dashboard', [MDashboardController::class, 'index']);
+
+        Route::get('store', [MStoreController::class, 'show']);
+        Route::put('store', [MStoreController::class, 'update']);
+
+        Route::get('branches', [MBranchController::class, 'index']);
+        Route::post('branches', [MBranchController::class, 'store']);
+        Route::put('branches/{branch}', [MBranchController::class, 'update']);
+        Route::delete('branches/{branch}', [MBranchController::class, 'destroy']);
+
+        Route::get('sections', [MSectionController::class, 'index']);
+        Route::post('sections', [MSectionController::class, 'store']);
+        Route::put('sections/{section}', [MSectionController::class, 'update']);
+        Route::delete('sections/{section}', [MSectionController::class, 'destroy']);
+
+        Route::get('products', [MProductController::class, 'index']);
+        Route::get('products/{product}', [MProductController::class, 'show']);
+        Route::post('products', [MProductController::class, 'store']);
+        Route::put('products/{product}', [MProductController::class, 'update']);
+        Route::patch('products/{product}/stock', [MProductController::class, 'setStock']);
+        Route::delete('products/{product}', [MProductController::class, 'destroy']);
+
+        Route::get('orders', [MOrderController::class, 'index']);
+        Route::get('orders/{order}', [MOrderController::class, 'show']);
+        Route::post('orders/{order}/accept', [MOrderController::class, 'accept']);
+        Route::post('orders/{order}/reject', [MOrderController::class, 'reject']);
+        Route::post('orders/{order}/ready', [MOrderController::class, 'ready']);
+
+        Route::get('wallet', [MWalletController::class, 'index']);
+        Route::post('withdraws', [MWalletController::class, 'requestWithdraw']);
     });
 });
