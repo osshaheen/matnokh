@@ -16,7 +16,6 @@ class SubscriptionPlanResource extends JsonResource
             'price' => (float) $this->price,
             'duration_days' => (int) $this->duration_days,
             'orders_limit' => $this->orders_limit,
-            'commission_rate' => $this->commission_rate !== null ? (float) $this->commission_rate : null,
             'features' => $this->features ?? [],
             'is_active' => (bool) $this->is_active,
             'sort' => (int) $this->sort,

@@ -64,7 +64,6 @@ class SubscriptionPlanController extends Controller
             'price' => [$required, 'numeric', 'min:0'],
             'duration_days' => ['nullable', 'integer', 'min:1', 'max:3650'],
             'orders_limit' => ['nullable', 'integer', 'min:1'],
-            'commission_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'features' => ['nullable', 'array'],
             'features.*' => ['string', 'max:255'],
             'is_active' => ['nullable', 'boolean'],

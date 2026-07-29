@@ -28,7 +28,6 @@ const planColumns: Column[] = [
   { key: 'name', label: 'الباقة', sortable: true },
   { key: 'price', label: 'السعر', sortable: true },
   { key: 'duration_days', label: 'المدة' },
-  { key: 'commission_rate', label: 'العمولة' },
   { key: 'features', label: 'المزايا' },
   { key: 'subscriptions_count', label: 'المشتركون' },
   { key: 'is_active', label: 'مفعّلة' },
@@ -67,13 +66,13 @@ async function cancelSub(row: any) {
 // ── plans ───────────────────────────────────────────────────────────────
 const showPlan = ref(false)
 const editingPlan = ref<any>(null)
-const planForm = reactive({ name: '', description: '', price: 0, duration_days: 30, commission_rate: null as number | null, orders_limit: null as number | null, features: '', is_active: true, sort: 0 })
+const planForm = reactive({ name: '', description: '', price: 0, duration_days: 30, orders_limit: null as number | null, features: '', is_active: true, sort: 0 })
 
 function openPlan(row: any = null) {
   editingPlan.value = row
   Object.assign(planForm, {
     name: row?.name ?? '', description: row?.description ?? '', price: row?.price ?? 0,
-    duration_days: row?.duration_days ?? 30, commission_rate: row?.commission_rate ?? null,
+    duration_days: row?.duration_days ?? 30,
     orders_limit: row?.orders_limit ?? null, features: (row?.features ?? []).join('\n'),
     is_active: row?.is_active ?? true, sort: row?.sort ?? 0,
   })
@@ -195,9 +194,6 @@ async function removePlan(row: any) {
         </template>
         <template #cell-price="{ row }"><span class="num" style="font-weight:700">{{ money(row.price) }}</span></template>
         <template #cell-duration_days="{ row }"><span class="num">{{ row.duration_days }} يوم</span></template>
-        <template #cell-commission_rate="{ row }">
-          <span class="num">{{ row.commission_rate !== null ? `${row.commission_rate}%` : '—' }}</span>
-        </template>
         <template #cell-features="{ row }">
           <div style="display:flex;gap:5px;flex-wrap:wrap;max-width:280px">
             <span v-for="(f, i) in row.features.slice(0, 3)" :key="i" class="pill pill-gray">{{ f }}</span>
@@ -251,9 +247,6 @@ async function removePlan(row: any) {
         <FormField label="اسم الباقة *"><input v-model="planForm.name" class="input" required></FormField>
         <FormField label="السعر *"><input v-model.number="planForm.price" type="number" min="0" step="0.01" class="input" dir="ltr" required></FormField>
         <FormField label="المدة (أيام)"><input v-model.number="planForm.duration_days" type="number" min="1" class="input" dir="ltr"></FormField>
-        <FormField label="نسبة العمولة %" hint="اتركها فارغة لاعتماد عمولة المتجر">
-          <input v-model.number="planForm.commission_rate" type="number" min="0" max="100" step="0.5" class="input" dir="ltr">
-        </FormField>
         <FormField label="حد الطلبات" hint="فارغ = غير محدود">
           <input v-model.number="planForm.orders_limit" type="number" min="1" class="input" dir="ltr">
         </FormField>

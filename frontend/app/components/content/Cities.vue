@@ -9,7 +9,7 @@ const cities = useResource('/cities', { is_active: '' })
 
 const columns: Column[] = [
   { key: 'name', label: 'المدينة', sortable: true },
-  { key: 'delivery_fee', label: 'أجرة التوصيل', sortable: true },
+  { key: 'delivery_fee', label: 'سعر الكيلومتر', sortable: true },
   { key: 'merchants_count', label: 'التجّار' },
   { key: 'drivers_count', label: 'السائقون' },
   { key: 'orders_count', label: 'الطلبات' },
@@ -86,7 +86,7 @@ async function remove(row: any) {
       <form id="city-form" class="form-grid" @submit.prevent="submit">
         <FormField label="الاسم بالعربية *"><input v-model="form.name" class="input" required></FormField>
         <FormField label="الاسم بالإنجليزية"><input v-model="form.name_en" class="input" dir="ltr"></FormField>
-        <FormField label="أجرة التوصيل"><input v-model.number="form.delivery_fee" type="number" min="0" step="0.5" class="input" dir="ltr"></FormField>
+        <FormField label="سعر التوصيل لكل كيلومتر" hint="التكلفة لكل 1 كم من نقطة الاستلام إلى الوجهة"><input v-model.number="form.delivery_fee" type="number" min="0" step="0.5" class="input" dir="ltr"></FormField>
         <FormField label="ترتيب العرض"><input v-model.number="form.sort" type="number" min="0" class="input" dir="ltr"></FormField>
         <FormField label="الحالة" full><AppSwitch v-model="form.is_active" label="المدينة مفعّلة" /></FormField>
       </form>

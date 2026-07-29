@@ -60,7 +60,7 @@ async function remove(row: any) {
       <template #cell-name="{ row }">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:34px;height:34px;border-radius:11px;background:var(--card2);display:flex;
-               align-items:center;justify-content:center;font-size:18px;color:var(--green)"><span v-if="row.icon">{{ row.icon }}</span><Icon v-else name="tag" /></div>
+               align-items:center;justify-content:center;overflow:hidden;color:var(--green)"><img v-if="row.icon" :src="row.icon" alt="" style="width:100%;height:100%;object-fit:cover"><Icon v-else name="tag" /></div>
           <div>
             <div style="font-weight:700;color:var(--head)">{{ row.name }}</div>
             <div class="muted" style="font-size:12px" dir="ltr">{{ row.name_en ?? '' }}</div>
@@ -86,7 +86,7 @@ async function remove(row: any) {
       <form id="category-form" class="form-grid" @submit.prevent="submit">
         <FormField label="الاسم بالعربية *"><input v-model="form.name" class="input" required></FormField>
         <FormField label="الاسم بالإنجليزية"><input v-model="form.name_en" class="input" dir="ltr"></FormField>
-        <FormField label="الأيقونة" hint="رمز تعبيري (اختياري)"><input v-model="form.icon" class="input"></FormField>
+        <FormField label="الأيقونة" full hint="صورة تُرفع مباشرة"><ImageUpload v-model="form.icon" /></FormField>
         <FormField label="ترتيب العرض"><input v-model.number="form.sort" type="number" min="0" class="input" dir="ltr"></FormField>
         <FormField label="الحالة" full><AppSwitch v-model="form.is_active" label="التصنيف مفعّل" /></FormField>
       </form>

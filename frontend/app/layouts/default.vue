@@ -10,6 +10,7 @@ const nav = [
   { to: '/customers', icon: 'users', label: 'الزبائن', perm: 'customer.view' },
   { to: '/withdraws', icon: 'cash', label: 'السحوبات', perm: 'withdraw.view' },
   { to: '/subscriptions', icon: 'star', label: 'الاشتراكات', perm: 'subscription.view' },
+  { to: '/services', icon: 'toolbox', label: 'الخدمات', perm: 'service.view' },
   { to: '/content', icon: 'folder', label: 'المحتوى', perm: 'city.view' },
   { to: '/notifications', icon: 'bell', label: 'الإشعارات', perm: 'notification.view' },
   { to: '/trash', icon: 'trash', label: 'سلّة المحذوفات', perm: 'trash.view' },

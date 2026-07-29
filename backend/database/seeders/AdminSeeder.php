@@ -28,6 +28,11 @@ class AdminSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $admin->syncPermissions(Permission::all());
 
+        // Partner roles — their apps come later; the roles must exist so a driver/
+        // merchant account created from the panel can be assigned one.
+        Role::firstOrCreate(['name' => 'driver', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'merchant', 'guard_name' => 'web']);
+
         $user = User::withTrashed()->firstOrNew(['email' => env('ADMIN_EMAIL', self::EMAIL)]);
 
         // No password is ever hard-coded here — this repository is public.

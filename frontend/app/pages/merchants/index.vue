@@ -18,7 +18,6 @@ const columns: Column[] = [
   { key: 'category', label: 'التصنيف' },
   { key: 'city', label: 'المدينة' },
   { key: 'orders_count', label: 'الطلبات' },
-  { key: 'commission_rate', label: 'العمولة' },
   { key: 'balance', label: 'الرصيد', sortable: true },
   { key: 'subscription', label: 'الاشتراك' },
   { key: 'status', label: 'الحالة' },
@@ -28,28 +27,45 @@ const columns: Column[] = [
 const showForm = ref(false)
 const editing = ref<any>(null)
 const form = reactive({
-  store_name: '', owner_name: '', phone: '', email: '',
+  store_name: '', owner_name: '', phone: '', email: '', password: '',
   city_id: '' as any, store_category_id: '' as any, address: '',
-  commission_rate: 10, notes: '',
+  notes: '',
 })
 
 function openForm(row: any = null) {
   editing.value = row
   Object.assign(form, {
     store_name: row?.store_name ?? '', owner_name: row?.owner_name ?? '',
-    phone: row?.phone ?? '', email: row?.email ?? '',
+    phone: row?.phone ?? '', email: row?.email ?? '', password: '',
     city_id: row?.city_id ?? '', store_category_id: row?.store_category_id ?? '',
-    address: row?.address ?? '', commission_rate: row?.commission_rate ?? 10,
+    address: row?.address ?? '',
     notes: row?.notes ?? '',
   })
   showForm.value = true
 }
 
 async function submit() {
+  const payload: any = { ...form }
+  if (editing.value || !payload.password) delete payload.password
   const res = editing.value
-    ? await merchants.update(editing.value.id, { ...form })
-    : await merchants.create({ ...form })
+    ? await merchants.update(editing.value.id, payload)
+    : await merchants.create(payload)
   if (res) showForm.value = false
+}
+
+// ── set / reset login password ──────────────────────────────────────────
+const pwRow = ref<any>(null)
+const pwValue = ref('')
+const pwSaving = ref(false)
+function openPw(row: any) { pwRow.value = row; pwValue.value = '' }
+async function savePw() {
+  if (pwValue.value.length < 4) return
+  pwSaving.value = true
+  try {
+    await api.post(`/merchants/${pwRow.value.id}/password`, { password: pwValue.value })
+    toast.success('تم تعيين كلمة المرور للتاجر')
+    pwRow.value = null
+  } catch (e) { toast.error(apiError(e)) } finally { pwSaving.value = false }
 }
 
 async function setStatus(row: any, status: string) {
@@ -127,7 +143,6 @@ async function openDetails(row: any) {
       <template #cell-category="{ row }">{{ row.category?.name ?? '—' }}</template>
       <template #cell-city="{ row }">{{ row.city?.name ?? '—' }}</template>
       <template #cell-orders_count="{ row }"><span class="num">{{ num(row.orders_count ?? 0) }}</span></template>
-      <template #cell-commission_rate="{ row }"><span class="num">{{ row.commission_rate }}%</span></template>
       <template #cell-balance="{ row }"><span class="num" style="font-weight:700">{{ money(row.balance) }}</span></template>
       <template #cell-subscription="{ row }">
         <template v-if="row.subscription">
@@ -150,6 +165,7 @@ async function openDetails(row: any) {
       <template #cell-actions="{ row }">
         <div class="row-actions">
           <button class="icon-btn" title="التفاصيل" @click="openDetails(row)"><Icon name="eye" /></button>
+          <button v-if="can('merchant.update')" class="icon-btn" title="تعيين كلمة مرور" @click="openPw(row)"><Icon name="lock" /></button>
           <button v-if="can('merchant.update')" class="icon-btn" title="تعديل" @click="openForm(row)"><Icon name="edit" /></button>
           <button v-if="can('merchant.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
@@ -164,6 +180,9 @@ async function openDetails(row: any) {
         <FormField label="اسم المالك"><input v-model="form.owner_name" class="input"></FormField>
         <FormField label="رقم الهاتف *"><input v-model="form.phone" class="input" dir="ltr" required></FormField>
         <FormField label="البريد الإلكتروني"><input v-model="form.email" type="email" class="input" dir="ltr"></FormField>
+        <FormField v-if="!editing" label="كلمة المرور" hint="لدخول التاجر للتطبيق — اتركها فارغة ويمكن تعيينها لاحقاً">
+          <input v-model="form.password" type="password" class="input" dir="ltr" autocomplete="new-password">
+        </FormField>
         <FormField label="المدينة">
           <select v-model="form.city_id" class="input">
             <option value="">— اختر —</option>
@@ -176,9 +195,6 @@ async function openDetails(row: any) {
             <option v-for="c in lookups.store_categories" :key="c.id" :value="c.id">{{ c.name }}</option>
           </select>
         </FormField>
-        <FormField label="نسبة العمولة %" hint="تُطبَّق على قيمة الطلبات">
-          <input v-model.number="form.commission_rate" type="number" min="0" max="100" step="0.5" class="input" dir="ltr">
-        </FormField>
         <FormField label="العنوان" full><input v-model="form.address" class="input"></FormField>
         <FormField label="ملاحظات" full><textarea v-model="form.notes" class="input" /></FormField>
       </form>
@@ -188,6 +204,20 @@ async function openDetails(row: any) {
           {{ merchants.saving ? 'جارٍ الحفظ…' : 'حفظ' }}
         </button>
         <button class="btn btn-ghost" @click="showForm = false">إلغاء</button>
+      </template>
+    </AppModal>
+
+    <AppModal :model-value="!!pwRow" title="تعيين كلمة مرور للتاجر" :subtitle="pwRow?.store_name" width="440px" @update:model-value="v => { if (!v) pwRow = null }">
+      <form id="merchant-pw" class="form-grid" @submit.prevent="savePw">
+        <FormField label="كلمة المرور الجديدة *" hint="4 أحرف على الأقل — يستخدمها التاجر للدخول للتطبيق">
+          <input v-model="pwValue" type="password" class="input" dir="ltr" autocomplete="new-password" required minlength="4">
+        </FormField>
+      </form>
+      <template #footer>
+        <button type="submit" form="merchant-pw" class="btn" :disabled="pwSaving || pwValue.length < 4">
+          {{ pwSaving ? 'جارٍ الحفظ…' : 'تعيين كلمة المرور' }}
+        </button>
+        <button class="btn btn-ghost" @click="pwRow = null">إلغاء</button>
       </template>
     </AppModal>
 
@@ -203,10 +233,6 @@ async function openDetails(row: any) {
           <div class="card" style="padding:14px">
             <div class="num" style="font-size:20px;font-weight:800;color:var(--head)">{{ money(details.stats.revenue) }}</div>
             <div class="muted" style="font-size:12px">إجمالي المبيعات</div>
-          </div>
-          <div class="card" style="padding:14px">
-            <div class="num" style="font-size:20px;font-weight:800;color:var(--head)">{{ money(details.stats.commission) }}</div>
-            <div class="muted" style="font-size:12px">عمولة المنصّة</div>
           </div>
           <div class="card" style="padding:14px">
             <div class="num" style="font-size:20px;font-weight:800;color:var(--green-d)">{{ money(details.data.balance) }}</div>

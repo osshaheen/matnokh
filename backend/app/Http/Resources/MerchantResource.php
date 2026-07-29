@@ -23,7 +23,6 @@ class MerchantResource extends JsonResource
             'lat' => $this->lat !== null ? (float) $this->lat : null,
             'lng' => $this->lng !== null ? (float) $this->lng : null,
             'logo' => $this->logo,
-            'commission_rate' => (float) $this->commission_rate,
             'balance' => (float) $this->balance,
             'status' => $this->status,
             'is_active' => (bool) $this->is_active,

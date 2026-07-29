@@ -24,7 +24,6 @@ class SettingsController extends Controller
             'support_email' => ['sometimes', 'nullable', 'email', 'max:255'],
             'currency' => ['sometimes', 'string', 'max:10'],
             'default_delivery_fee' => ['sometimes', 'numeric', 'min:0'],
-            'default_commission_rate' => ['sometimes', 'numeric', 'min:0', 'max:100'],
             'min_withdraw_amount' => ['sometimes', 'numeric', 'min:0'],
             'auto_assign_driver' => ['sometimes', 'boolean'],
             'orders_enabled' => ['sometimes', 'boolean'],

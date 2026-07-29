@@ -19,11 +19,10 @@ export const PARTNER_STATUS: Record<string, [string, Pill]> = {
   suspended: ['موقوف', 'pill-gray'],
 }
 
+// Payment records are for monitoring/documentation only — a single "recorded" state.
 export const WITHDRAW_STATUS: Record<string, [string, Pill]> = {
-  pending: ['قيد المراجعة', 'pill-sand'],
-  approved: ['موافق عليه', 'pill-blue'],
-  rejected: ['مرفوض', 'pill-terra'],
-  paid: ['مدفوع', 'pill-green'],
+  recorded: ['مسجّل', 'pill-green'],
+  pending: ['مسجّل', 'pill-green'],
 }
 
 export const SUBSCRIPTION_STATUS: Record<string, [string, Pill]> = {

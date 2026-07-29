@@ -19,7 +19,6 @@ class Setting extends Model
         'currency' => 'ILS',
         // operations
         'default_delivery_fee' => 15,
-        'default_commission_rate' => 10,
         'min_withdraw_amount' => 100,
         'auto_assign_driver' => false,
         'orders_enabled' => true,

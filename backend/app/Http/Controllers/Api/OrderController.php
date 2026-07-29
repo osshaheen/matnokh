@@ -55,7 +55,6 @@ class OrderController extends Controller
         }
 
         $data = $this->validated($request);
-        $data['commission'] ??= $this->defaultCommission($data);
 
         $order = DB::transaction(function () use ($data, $request) {
             $order = Order::create($data);
@@ -162,7 +161,6 @@ class OrderController extends Controller
             'recipient_phone' => ['nullable', 'string', 'max:30'],
             'items_total' => ['nullable', 'numeric', 'min:0'],
             'delivery_fee' => ['nullable', 'numeric', 'min:0'],
-            'commission' => ['nullable', 'numeric', 'min:0'],
             'discount' => ['nullable', 'numeric', 'min:0'],
             'payment_method' => ['nullable', Rule::in(['cash', 'card', 'wallet'])],
             'is_paid' => ['nullable', 'boolean'],
@@ -172,21 +170,12 @@ class OrderController extends Controller
         ]);
     }
 
-    /** Merchant's own rate when set, otherwise the platform default. */
-    protected function defaultCommission(array $data): float
-    {
-        $rate = Merchant::find($data['merchant_id'] ?? null)?->commission_rate
-            ?? Setting::get('default_commission_rate');
-
-        return round(((float) ($data['items_total'] ?? 0)) * (float) $rate / 100, 2);
-    }
-
-    /** Delivery pays out: merchant keeps the goods minus commission, driver keeps the fee. */
+    /** Delivery pays out: subscription model — merchant keeps the full goods total, driver keeps the fee. No commission. */
     protected function settleBalances(Order $order): void
     {
         if ($order->merchant_id) {
             Merchant::whereKey($order->merchant_id)
-                ->increment('balance', max(0, (float) $order->items_total - (float) $order->commission));
+                ->increment('balance', max(0, (float) $order->items_total));
         }
         if ($order->driver_id) {
             Driver::whereKey($order->driver_id)->increment('balance', (float) $order->delivery_fee);

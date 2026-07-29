@@ -16,12 +16,10 @@ class Merchant extends Model
     protected $attributes = [
         'status' => 'pending',
         'is_active' => true,
-        'commission_rate' => 10,
         'balance' => 0,
     ];
     protected $casts = [
         'is_active' => 'boolean',
-        'commission_rate' => 'decimal:2',
         'balance' => 'decimal:2',
         'lat' => 'decimal:7',
         'lng' => 'decimal:7',

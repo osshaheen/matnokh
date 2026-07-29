@@ -118,7 +118,6 @@ const rows = computed(() => order.value ? [
   ['قيمة الطلب', money_(order.value.items_total)],
   ['أجرة التوصيل', money_(order.value.delivery_fee)],
   ['الخصم', `− ${money_(order.value.discount)}`],
-  ['العمولة', money_(order.value.commission)],
 ] : [])
 </script>
 

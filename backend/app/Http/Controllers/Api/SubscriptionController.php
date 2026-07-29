@@ -60,9 +60,15 @@ class SubscriptionController extends Controller
         $plan = SubscriptionPlan::findOrFail($data['subscription_plan_id']);
         $starts = Carbon::parse($data['starts_at'] ?? today());
 
-        // a merchant runs one active subscription at a time — the new one supersedes it
-        Subscription::where('merchant_id', $data['merchant_id'])
-            ->where('status', 'active')->update(['status' => 'canceled']);
+        // A merchant may hold only ONE active subscription at a time — reject a
+        // second one instead of silently superseding the first.
+        $hasActive = Subscription::where('merchant_id', $data['merchant_id'])
+            ->where('status', 'active')
+            ->whereDate('ends_at', '>=', today())
+            ->exists();
+        if ($hasActive) {
+            $this->fail('merchant_id', 'هذا المتجر لديه اشتراك فعّال بالفعل — لا يمكن إضافة اشتراك ثانٍ في آنٍ واحد. جدّد الاشتراك الحالي أو ألغِه أولاً.');
+        }
 
         $subscription = Subscription::create([
             'merchant_id' => $data['merchant_id'],

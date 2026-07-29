@@ -29,14 +29,14 @@ const columns: Column[] = [
 const showForm = ref(false)
 const editing = ref<any>(null)
 const form = reactive({
-  name: '', phone: '', email: '', city_id: '' as any, vehicle_type: 'motorcycle',
+  name: '', phone: '', email: '', password: '', city_id: '' as any, vehicle_type: 'motorcycle',
   vehicle_plate: '', national_id: '', license_number: '', notes: '',
 })
 
 function openForm(row: any = null) {
   editing.value = row
   Object.assign(form, {
-    name: row?.name ?? '', phone: row?.phone ?? '', email: row?.email ?? '',
+    name: row?.name ?? '', phone: row?.phone ?? '', email: row?.email ?? '', password: '',
     city_id: row?.city_id ?? '', vehicle_type: row?.vehicle_type ?? 'motorcycle',
     vehicle_plate: row?.vehicle_plate ?? '', national_id: row?.national_id ?? '',
     license_number: row?.license_number ?? '', notes: row?.notes ?? '',
@@ -45,10 +45,27 @@ function openForm(row: any = null) {
 }
 
 async function submit() {
+  const payload: any = { ...form }
+  if (editing.value || !payload.password) delete payload.password
   const res = editing.value
-    ? await drivers.update(editing.value.id, { ...form })
-    : await drivers.create({ ...form })
+    ? await drivers.update(editing.value.id, payload)
+    : await drivers.create(payload)
   if (res) showForm.value = false
+}
+
+// ── set / reset login password ──────────────────────────────────────────
+const pwRow = ref<any>(null)
+const pwValue = ref('')
+const pwSaving = ref(false)
+function openPw(row: any) { pwRow.value = row; pwValue.value = '' }
+async function savePw() {
+  if (pwValue.value.length < 4) return
+  pwSaving.value = true
+  try {
+    await api.post(`/drivers/${pwRow.value.id}/password`, { password: pwValue.value })
+    toast.success('تم تعيين كلمة المرور للسائق')
+    pwRow.value = null
+  } catch (e) { toast.error(apiError(e)) } finally { pwSaving.value = false }
 }
 
 // ── status / availability ───────────────────────────────────────────────
@@ -162,6 +179,7 @@ async function openDetails(row: any) {
       <template #cell-actions="{ row }">
         <div class="row-actions">
           <button class="icon-btn" title="التفاصيل" @click="openDetails(row)"><Icon name="eye" /></button>
+          <button v-if="can('driver.update')" class="icon-btn" title="تعيين كلمة مرور" @click="openPw(row)"><Icon name="lock" /></button>
           <button v-if="can('driver.update')" class="icon-btn" title="تعديل" @click="openForm(row)"><Icon name="edit" /></button>
           <button v-if="can('driver.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
@@ -176,6 +194,9 @@ async function openDetails(row: any) {
         <FormField label="الاسم *"><input v-model="form.name" class="input" required></FormField>
         <FormField label="رقم الهاتف *"><input v-model="form.phone" class="input" dir="ltr" required></FormField>
         <FormField label="البريد الإلكتروني"><input v-model="form.email" type="email" class="input" dir="ltr"></FormField>
+        <FormField v-if="!editing" label="كلمة المرور" hint="لدخول السائق للتطبيق — اتركها فارغة ويمكن تعيينها لاحقاً">
+          <input v-model="form.password" type="password" class="input" dir="ltr" autocomplete="new-password">
+        </FormField>
         <FormField label="المدينة">
           <select v-model="form.city_id" class="input">
             <option value="">— اختر —</option>
@@ -198,6 +219,21 @@ async function openDetails(row: any) {
           {{ drivers.saving ? 'جارٍ الحفظ…' : 'حفظ' }}
         </button>
         <button class="btn btn-ghost" @click="showForm = false">إلغاء</button>
+      </template>
+    </AppModal>
+
+    <!-- ── set / reset password ──────────────────────────────────────── -->
+    <AppModal :model-value="!!pwRow" title="تعيين كلمة مرور للسائق" :subtitle="pwRow?.name" width="440px" @update:model-value="v => { if (!v) pwRow = null }">
+      <form id="driver-pw" class="form-grid" @submit.prevent="savePw">
+        <FormField label="كلمة المرور الجديدة *" hint="4 أحرف على الأقل — يستخدمها السائق للدخول للتطبيق">
+          <input v-model="pwValue" type="password" class="input" dir="ltr" autocomplete="new-password" required minlength="4">
+        </FormField>
+      </form>
+      <template #footer>
+        <button type="submit" form="driver-pw" class="btn" :disabled="pwSaving || pwValue.length < 4">
+          {{ pwSaving ? 'جارٍ الحفظ…' : 'تعيين كلمة المرور' }}
+        </button>
+        <button class="btn btn-ghost" @click="pwRow = null">إلغاء</button>
       </template>
     </AppModal>
 

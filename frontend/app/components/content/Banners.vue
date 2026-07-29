@@ -104,8 +104,8 @@ async function remove(row: any) {
     <AppModal v-model="show" :title="editing ? 'تعديل البانر' : 'بانر جديد'" width="600px">
       <form id="banner-form" class="form-grid" @submit.prevent="submit">
         <FormField label="العنوان *" full><input v-model="form.title" class="input" required></FormField>
-        <FormField label="رابط الصورة" full hint="ارفع الصورة على التخزين وضع رابطها هنا">
-          <input v-model="form.image" class="input" dir="ltr" placeholder="https://…">
+        <FormField label="صورة البانر" full hint="تُرفع مباشرة على الموقع">
+          <ImageUpload v-model="form.image" />
         </FormField>
         <FormField label="رابط الوجهة" full><input v-model="form.link" class="input" dir="ltr" placeholder="https://…"></FormField>
         <FormField label="الموضع">

@@ -31,15 +31,14 @@ const k = computed(() => data.value?.kpis ?? {})
 
 const kpis = computed(() => [
   { label: 'طلبات اليوم', value: num(k.value.orders_today ?? 0), icon: 'box', grad: 'var(--grad-green)', hint: `${num(k.value.orders_active ?? 0)} طلب جارٍ` },
-  { label: 'إيراد اليوم', value: money(k.value.revenue_today ?? 0), icon: 'wallet', grad: 'var(--grad-sand)', hint: `الشهر: ${money(k.value.revenue_month ?? 0)}` },
+  { label: 'إيراد الاشتراكات اليوم', value: money(k.value.revenue_today ?? 0), icon: 'wallet', grad: 'var(--grad-sand)', hint: `الشهر: ${money(k.value.revenue_month ?? 0)}` },
   { label: 'السائقون المتاحون', value: `${num(k.value.drivers_available ?? 0)} / ${num(k.value.drivers_total ?? 0)}`, icon: 'car', grad: 'var(--grad-blue)', hint: '' },
   { label: 'التجّار النشطون', value: num(k.value.merchants_active ?? 0), icon: 'store', grad: 'var(--grad-terra)', hint: k.value.merchants_pending ? `${num(k.value.merchants_pending)} بانتظار الاعتماد` : '' },
 ])
 
 const secondary = computed(() => [
-  { label: 'سحوبات معلّقة', value: num(k.value.withdraws_pending ?? 0), sub: money(k.value.withdraws_pending_amount ?? 0), to: '/withdraws', perm: 'withdraw.view', icon: 'cash' },
+  { label: 'مدفوعات مسجّلة', value: num(k.value.withdraws_pending ?? 0), sub: money(k.value.withdraws_pending_amount ?? 0), to: '/withdraws', perm: 'withdraw.view', icon: 'cash' },
   { label: 'اشتراكات فعّالة', value: num(k.value.subscriptions_active ?? 0), sub: `${num(k.value.subscriptions_expiring ?? 0)} تنتهي خلال أسبوع`, to: '/subscriptions', perm: 'subscription.view', icon: 'star' },
-  { label: 'عمولة الشهر', value: money(k.value.commission_month ?? 0), sub: 'من الطلبات المسلّمة', to: '/orders', perm: 'order.view', icon: 'trend' },
   { label: 'إجمالي الزبائن', value: num(k.value.customers_total ?? 0), sub: `${num(k.value.orders_total ?? 0)} طلب إجمالاً`, to: '/customers', perm: 'customer.view', icon: 'users' },
 ])
 

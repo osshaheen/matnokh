@@ -24,8 +24,8 @@ class DashboardController extends Controller
         $today = Carbon::today();
         $monthStart = Carbon::today()->startOfMonth();
 
-        $delivered = fn () => Order::where('status', 'delivered');
-
+        // Platform revenue is the SUBSCRIPTION income (order totals belong to the
+        // merchants). Revenue is counted by when a subscription STARTS.
         return response()->json(['data' => [
             'kpis' => [
                 'orders_today' => Order::whereDate('created_at', $today)->count(),
@@ -36,11 +36,10 @@ class DashboardController extends Controller
                 'merchants_active' => Merchant::where('status', 'approved')->where('is_active', true)->count(),
                 'merchants_pending' => Merchant::where('status', 'pending')->count(),
                 'customers_total' => Customer::count(),
-                'revenue_today' => round((float) $delivered()->whereDate('delivered_at', $today)->sum('total'), 2),
-                'revenue_month' => round((float) $delivered()->whereDate('delivered_at', '>=', $monthStart)->sum('total'), 2),
-                'commission_month' => round((float) $delivered()->whereDate('delivered_at', '>=', $monthStart)->sum('commission'), 2),
-                'withdraws_pending' => Withdraw::where('status', 'pending')->count(),
-                'withdraws_pending_amount' => round((float) Withdraw::where('status', 'pending')->sum('amount'), 2),
+                'revenue_today' => round((float) Subscription::whereDate('starts_at', $today)->sum('price'), 2),
+                'revenue_month' => round((float) Subscription::whereDate('starts_at', '>=', $monthStart)->sum('price'), 2),
+                'withdraws_pending' => Withdraw::count(),
+                'withdraws_pending_amount' => round((float) Withdraw::sum('amount'), 2),
                 'subscriptions_active' => Subscription::where('status', 'active')->whereDate('ends_at', '>=', $today)->count(),
                 'subscriptions_expiring' => Subscription::where('status', 'active')
                     ->whereBetween('ends_at', [$today, $today->copy()->addDays(7)])->count(),

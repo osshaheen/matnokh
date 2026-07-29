@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\SubscriptionPlanController;
 use App\Http\Controllers\Api\TrashController;
 use App\Http\Controllers\Api\WithdrawController;
+use App\Http\Controllers\Api\UploadController;
 use Illuminate\Support\Facades\Route;
 
 // public
@@ -31,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // available to every signed-in user — the UI needs these to render itself
     Route::get('settings', [SettingsController::class, 'index']);
+    Route::post('uploads', [UploadController::class, 'store']);
     Route::get('lookups', [LookupController::class, 'index']);
 
     Route::get('dashboard', [DashboardController::class, 'index'])->middleware('perm:dashboard.view');
@@ -48,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('drivers', [DriverController::class, 'index'])->middleware('perm:driver.view');
     Route::get('drivers/{driver}', [DriverController::class, 'show'])->middleware('perm:driver.view');
     Route::post('drivers', [DriverController::class, 'store'])->middleware('perm:driver.create');
+    Route::post('drivers/{driver}/password', [DriverController::class, 'setPassword'])->middleware('perm:driver.update');
     Route::put('drivers/{driver}', [DriverController::class, 'update'])->middleware('perm:driver.update');
     Route::patch('drivers/{driver}/status', [DriverController::class, 'updateStatus'])->middleware('perm:driver.update');
     Route::patch('drivers/{driver}/availability', [DriverController::class, 'updateAvailability'])->middleware('perm:driver.update');
@@ -57,6 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('merchants', [MerchantController::class, 'index'])->middleware('perm:merchant.view');
     Route::get('merchants/{merchant}', [MerchantController::class, 'show'])->middleware('perm:merchant.view');
     Route::post('merchants', [MerchantController::class, 'store'])->middleware('perm:merchant.create');
+    Route::post('merchants/{merchant}/password', [MerchantController::class, 'setPassword'])->middleware('perm:merchant.update');
     Route::put('merchants/{merchant}', [MerchantController::class, 'update'])->middleware('perm:merchant.update');
     Route::patch('merchants/{merchant}/status', [MerchantController::class, 'updateStatus'])->middleware('perm:merchant.update');
     Route::delete('merchants/{merchant}', [MerchantController::class, 'destroy'])->middleware('perm:merchant.delete');
@@ -72,7 +76,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('withdraws', [WithdrawController::class, 'index'])->middleware('perm:withdraw.view');
     Route::get('withdraws/{withdraw}', [WithdrawController::class, 'show'])->middleware('perm:withdraw.view');
     Route::post('withdraws', [WithdrawController::class, 'store'])->middleware('perm:withdraw.create');
-    Route::patch('withdraws/{withdraw}/status', [WithdrawController::class, 'updateStatus'])->middleware('perm:withdraw.update');
     Route::delete('withdraws/{withdraw}', [WithdrawController::class, 'destroy'])->middleware('perm:withdraw.delete');
 
     // ── subscriptions & plans ─────────────────────────────────────────────

@@ -21,7 +21,6 @@ class SubscriptionPlan extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'price' => 'decimal:2',
-        'commission_rate' => 'decimal:2',
         'features' => 'array',
     ];
 

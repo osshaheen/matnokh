@@ -29,7 +29,6 @@ class Order extends Model
         'is_paid' => false,
         'items_total' => 0,
         'delivery_fee' => 0,
-        'commission' => 0,
         'discount' => 0,
         'total' => 0,
     ];
@@ -38,7 +37,6 @@ class Order extends Model
         'is_paid' => 'boolean',
         'items_total' => 'decimal:2',
         'delivery_fee' => 'decimal:2',
-        'commission' => 'decimal:2',
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
         'scheduled_at' => 'datetime',

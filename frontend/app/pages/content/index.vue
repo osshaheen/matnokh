@@ -6,7 +6,6 @@ const { can } = useAuth()
 const tabs = [
   { key: 'cities', label: 'المدن', perm: 'city.view' },
   { key: 'categories', label: 'تصنيفات المتاجر', perm: 'store_category.view' },
-  { key: 'services', label: 'الخدمات', perm: 'service.view' },
   { key: 'banners', label: 'البانرات', perm: 'banner.view' },
   { key: 'articles', label: 'المقالات', perm: 'article.view' },
 ]
@@ -29,7 +28,6 @@ const tab = ref(visible.value[0]?.key ?? 'cities')
 
     <ContentCities v-if="tab === 'cities'" />
     <ContentCategories v-else-if="tab === 'categories'" />
-    <ContentServices v-else-if="tab === 'services'" />
     <ContentBanners v-else-if="tab === 'banners'" />
     <ContentArticles v-else-if="tab === 'articles'" />
     <EmptyState v-else icon="lock" title="لا تملك صلاحية عرض هذا القسم" />

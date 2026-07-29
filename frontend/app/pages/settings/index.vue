@@ -9,7 +9,7 @@ const tab = ref<'general' | 'operations' | 'safety' | 'activity'>('general')
 
 const form = reactive<Record<string, any>>({
   app_name: '', support_phone: '', support_email: '', currency: 'ILS',
-  default_delivery_fee: 0, default_commission_rate: 0, min_withdraw_amount: 0,
+  default_delivery_fee: 0, min_withdraw_amount: 0,
   auto_assign_driver: false, orders_enabled: true,
   deletion_enabled: true, trash_enabled: true, restore_enabled: true, maintenance_mode: false,
 })
@@ -107,9 +107,6 @@ const SUBJECTS: Record<string, string> = {
       <div class="form-grid">
         <FormField label="أجرة التوصيل الافتراضية" hint="تُستخدم عندما لا تحدّد المدينة أجرة">
           <input v-model.number="form.default_delivery_fee" type="number" min="0" step="0.5" class="input" dir="ltr" :disabled="!can('settings.update')">
-        </FormField>
-        <FormField label="نسبة العمولة الافتراضية %" hint="تُطبَّق على المتاجر بلا نسبة خاصة">
-          <input v-model.number="form.default_commission_rate" type="number" min="0" max="100" step="0.5" class="input" dir="ltr" :disabled="!can('settings.update')">
         </FormField>
         <FormField label="الحد الأدنى للسحب">
           <input v-model.number="form.min_withdraw_amount" type="number" min="0" step="1" class="input" dir="ltr" :disabled="!can('settings.update')">

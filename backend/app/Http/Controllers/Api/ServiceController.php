@@ -21,7 +21,7 @@ class ServiceController extends Controller
             $request,
             searchable: ['name', 'description'],
             filters: ['is_active' => 'is_active'],
-            sortable: ['id', 'name', 'base_price', 'sort', 'created_at'],
+            sortable: ['id', 'name', 'sort', 'created_at'],
         );
 
         return ServiceResource::collection($services);
@@ -62,7 +62,7 @@ class ServiceController extends Controller
             'name' => [$required, 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:255'],
-            'base_price' => ['nullable', 'numeric', 'min:0'],
+            'point_type' => ['nullable', 'in:pickup_dropoff,pickup_only'],
             'is_active' => ['nullable', 'boolean'],
             'sort' => ['nullable', 'integer', 'min:0'],
         ]);

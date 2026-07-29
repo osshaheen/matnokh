@@ -17,13 +17,8 @@ class WithdrawController extends Controller
 {
     use HandlesResourceQuery;
 
-    /** Allowed transitions out of each state. */
-    protected const FLOW = [
-        'pending' => ['approved', 'rejected'],
-        'approved' => ['paid', 'rejected'],
-        'rejected' => [],
-        'paid' => [],
-    ];
+    // Payment LOG — the customer pays the merchant directly to the merchant's own
+    // account; the platform only monitors and records. No approve/reject workflow.
 
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -68,66 +63,22 @@ class WithdrawController extends Controller
             $this->fail('requester_id', 'الحساب المطلوب غير موجود');
         }
 
-        $min = (float) Setting::get('min_withdraw_amount');
-        if ((float) $data['amount'] < $min) {
-            $this->fail('amount', "الحد الأدنى للسحب هو {$min}");
-        }
-        if ((float) $data['amount'] > (float) $requester->balance) {
-            $this->fail('amount', 'المبلغ المطلوب أكبر من الرصيد المتاح');
-        }
-
+        // Just a record for documentation — marked recorded, no approval.
         $withdraw = Withdraw::create([
             ...$data,
             'requester_type' => $model,
-            'status' => 'pending',
+            'status' => 'recorded',
         ]);
 
         return (new WithdrawResource($withdraw->load('requester')))->response()->setStatusCode(201);
-    }
-
-    /** PATCH /api/withdraws/{withdraw}/status — approve, reject or mark as paid. */
-    public function updateStatus(Request $request, Withdraw $withdraw): JsonResponse
-    {
-        $data = $request->validate([
-            'status' => ['required', Rule::in(['approved', 'rejected', 'paid'])],
-            'admin_note' => ['nullable', 'string'],
-        ]);
-
-        if (! in_array($data['status'], self::FLOW[$withdraw->status] ?? [], true)) {
-            $this->fail('status', 'لا يمكن الانتقال من الحالة الحالية إلى الحالة المطلوبة');
-        }
-
-        DB::transaction(function () use ($withdraw, $data, $request) {
-            // the balance is only actually debited when the money goes out
-            if ($data['status'] === 'paid') {
-                $requester = $withdraw->requester()->lockForUpdate()->first();
-                if (! $requester || (float) $requester->balance < (float) $withdraw->amount) {
-                    $this->fail('status', 'رصيد الحساب لا يغطي المبلغ');
-                }
-                $requester->decrement('balance', (float) $withdraw->amount);
-            }
-
-            $withdraw->update([
-                'status' => $data['status'],
-                'admin_note' => $data['admin_note'] ?? $withdraw->admin_note,
-                'processed_by' => $request->user()?->id,
-                'processed_at' => now(),
-            ]);
-        });
-
-        return (new WithdrawResource($withdraw->fresh()->load(['requester', 'processor'])))->response();
     }
 
     public function destroy(Withdraw $withdraw): JsonResponse
     {
         $this->guardDeletion();
 
-        if ($withdraw->status === 'paid') {
-            $this->fail('id', 'لا يمكن حذف طلب سحب مدفوع');
-        }
-
         $withdraw->delete();
 
-        return response()->json(['message' => 'تم نقل طلب السحب إلى سلّة المحذوفات']);
+        return response()->json(['message' => 'تم حذف السجل']);
     }
 }

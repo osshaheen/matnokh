@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\Concerns\HandlesResourceQuery;
+use App\Http\Controllers\Api\Concerns\LinksUserAccount;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DriverResource;
 use App\Http\Resources\OrderResource;
@@ -14,7 +15,7 @@ use Illuminate\Validation\Rule;
 
 class DriverController extends Controller
 {
-    use HandlesResourceQuery;
+    use HandlesResourceQuery, LinksUserAccount;
 
     public const VEHICLES = ['motorcycle', 'car', 'bicycle', 'van'];
     public const STATUSES = ['pending', 'approved', 'rejected', 'suspended'];
@@ -57,9 +58,27 @@ class DriverController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $driver = Driver::create($this->validated($request));
+        $data = $this->validated($request);
+        $password = $request->input('password');
+        unset($data['password']);
 
-        return (new DriverResource($driver->load('city')))->response()->setStatusCode(201);
+        $driver = Driver::create($data);
+
+        // optional login account created at add-time
+        if (is_string($password) && strlen($password) >= 4) {
+            $this->setPartnerPassword($driver, 'driver', $password, $driver->name, $driver->phone, $driver->email);
+        }
+
+        return (new DriverResource($driver->fresh()->load('city')))->response()->setStatusCode(201);
+    }
+
+    /** POST /api/drivers/{driver}/password — set or reset the driver's login password. */
+    public function setPassword(Request $request, Driver $driver): JsonResponse
+    {
+        $data = $request->validate(['password' => ['required', 'string', 'min:4', 'max:100']]);
+        $this->setPartnerPassword($driver, 'driver', $data['password'], $driver->name, $driver->phone, $driver->email);
+
+        return response()->json(['message' => 'تم تعيين كلمة المرور للسائق']);
     }
 
     public function update(Request $request, Driver $driver): JsonResponse
@@ -122,6 +141,7 @@ class DriverController extends Controller
             'name' => [$required, 'string', 'max:255'],
             'phone' => [$required, 'string', 'max:30', Rule::unique('drivers', 'phone')->ignore($driver?->id)->whereNull('deleted_at')],
             'email' => ['nullable', 'email', 'max:255'],
+            'password' => ['nullable', 'string', 'min:4', 'max:100'],
             'city_id' => ['nullable', 'exists:cities,id'],
             'vehicle_type' => ['nullable', Rule::in(self::VEHICLES)],
             'vehicle_plate' => ['nullable', 'string', 'max:50'],

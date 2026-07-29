@@ -77,7 +77,7 @@ class DemoSeeder extends Seeder
         ];
         foreach ($services as $i => [$name, $desc, $icon, $price]) {
             Service::firstOrCreate(['name' => $name], [
-                'description' => $desc, 'icon' => $icon, 'base_price' => $price,
+                'description' => $desc, 'icon' => null, 'point_type' => $i % 2 ? 'pickup_only' : 'pickup_dropoff',
                 'is_active' => true, 'sort' => $i,
             ]);
         }
@@ -85,11 +85,11 @@ class DemoSeeder extends Seeder
         $plans = [
             ['الباقة الأساسية', 99, 30, 8, ['حتى 100 طلب شهرياً', 'دعم فني عبر البريد', 'تقارير أساسية']],
             ['الباقة المتقدمة', 199, 30, 6, ['طلبات غير محدودة', 'دعم فني على مدار الساعة', 'تقارير متقدمة', 'أولوية في التوصيل']],
-            ['الباقة الذهبية', 499, 90, 4, ['كل مزايا المتقدمة', 'مدير حساب مخصّص', 'بانر إعلاني في التطبيق', 'أقل نسبة عمولة']],
+            ['الباقة الذهبية', 499, 90, 4, ['كل مزايا المتقدمة', 'مدير حساب مخصّص', 'بانر إعلاني في التطبيق', 'دعم أولوية']],
         ];
         foreach ($plans as $i => [$name, $price, $days, $rate, $features]) {
             SubscriptionPlan::firstOrCreate(['name' => $name], [
-                'price' => $price, 'duration_days' => $days, 'commission_rate' => $rate,
+                'price' => $price, 'duration_days' => $days,
                 'features' => $features, 'is_active' => true, 'sort' => $i,
             ]);
         }
@@ -114,7 +114,6 @@ class DemoSeeder extends Seeder
                 'city_id' => $cityIds[$i % count($cityIds)],
                 'store_category_id' => $categoryIds[$i % count($categoryIds)],
                 'address' => 'شارع رئيسي - '.City::find($cityIds[$i % count($cityIds)])->name,
-                'commission_rate' => [8, 10, 12][$i % 3],
                 'balance' => 0,
                 'status' => $i < 9 ? 'approved' : ($i < 11 ? 'pending' : 'suspended'),
                 'is_active' => $i < 9,
@@ -177,7 +176,6 @@ class DemoSeeder extends Seeder
 
             $items = 40 + (($i * 13) % 260);
             $fee = (float) ($merchant->city?->delivery_fee ?? 15);
-            $commission = round($items * (float) $merchant->commission_rate / 100, 2);
 
             $order = new Order([
                 'customer_id' => $customer->id,
@@ -191,7 +189,6 @@ class DemoSeeder extends Seeder
                 'recipient_phone' => $customer->phone,
                 'items_total' => $items,
                 'delivery_fee' => $fee,
-                'commission' => $commission,
                 'payment_method' => ['cash', 'cash', 'card', 'wallet'][$i % 4],
                 'is_paid' => $status === 'delivered',
                 'status' => $status,
@@ -224,7 +221,7 @@ class DemoSeeder extends Seeder
 
             // delivered orders pay out, matching what OrderController does live
             if ($status === 'delivered') {
-                $merchant->increment('balance', max(0, $items - $commission));
+                $merchant->increment('balance', max(0, $items));
                 $driver?->increment('balance', $fee);
             }
         }
@@ -256,7 +253,7 @@ class DemoSeeder extends Seeder
                 'account_name' => $driver->name,
                 'account_number' => 'PS'.str_pad((string) (9000 + $i), 8, '0', STR_PAD_LEFT),
                 'bank_name' => 'بنك فلسطين',
-                'status' => ['pending', 'pending', 'approved', 'paid'][$i % 4],
+                'status' => 'recorded',
             ]);
         }
 
@@ -269,7 +266,7 @@ class DemoSeeder extends Seeder
                 'account_name' => $merchant->owner_name,
                 'account_number' => 'PS'.str_pad((string) (7000 + $i), 8, '0', STR_PAD_LEFT),
                 'bank_name' => 'البنك العربي',
-                'status' => $i === 0 ? 'pending' : 'approved',
+                'status' => 'recorded',
             ]);
         }
     }
