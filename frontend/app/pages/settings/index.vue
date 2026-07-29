@@ -74,7 +74,7 @@ const SUBJECTS: Record<string, string> = {
     <PageHeader title="الإعدادات" subtitle="إعدادات المنصّة العامة ومفاتيح التحكّم">
       <template #actions>
         <button v-if="can('settings.update') && tab !== 'activity'" class="btn" :disabled="saving || loading" @click="save">
-          {{ saving ? 'جارٍ الحفظ…' : '💾 حفظ التغييرات' }}
+          {{ saving ? 'جارٍ الحفظ…' : 'حفظ التغييرات' }}
         </button>
       </template>
     </PageHeader>
@@ -167,14 +167,14 @@ const SUBJECTS: Record<string, string> = {
     <div v-else class="card">
       <div style="padding:18px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
         <div style="font-weight:800;color:var(--head)">آخر النشاطات</div>
-        <button class="btn btn-ghost btn-sm" :disabled="activityLoading" @click="loadActivity">↻ تحديث</button>
+        <button class="btn btn-ghost btn-sm" :disabled="activityLoading" @click="loadActivity"><Icon name="refresh" /> تحديث</button>
       </div>
 
       <div v-if="activityLoading" style="padding:20px;display:flex;flex-direction:column;gap:12px">
         <div v-for="i in 5" :key="i" class="skeleton" style="height:38px" />
       </div>
 
-      <EmptyState v-else-if="!activity.length" icon="📋" title="لا توجد نشاطات مسجّلة" />
+      <EmptyState v-else-if="!activity.length" icon="clipboard" title="لا توجد نشاطات مسجّلة" />
 
       <div v-else>
         <div

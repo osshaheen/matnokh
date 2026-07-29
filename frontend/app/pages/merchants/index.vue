@@ -83,12 +83,12 @@ async function openDetails(row: any) {
   <div>
     <PageHeader title="التجّار" :subtitle="`${num(merchants.meta.total)} متجر`">
       <template #actions>
-        <button v-if="can('merchant.create')" class="btn" @click="openForm()">＋ متجر جديد</button>
+        <button v-if="can('merchant.create')" class="btn" @click="openForm()"><Icon name="plus" :size="15" /> متجر جديد</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="merchants.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم المتجر، المالك، الهاتف…">
+      <input v-model="merchants.query.search" class="input input-sm grow" placeholder="بحث باسم المتجر، المالك، الهاتف…">
 
       <select v-model="merchants.query.status" class="input input-sm">
         <option value="">كل الحالات</option>
@@ -111,7 +111,7 @@ async function openDetails(row: any) {
     <DataTable
       :columns="columns" :rows="merchants.items" :loading="merchants.loading"
       :sort="merchants.query.sort" :dir="merchants.query.dir"
-      empty="لا يوجد تجّار مطابقون" empty-icon="🏪"
+      empty="لا يوجد تجّار مطابقون" empty-icon="store"
       @sort="merchants.sortBy"
     >
       <template #cell-store_name="{ row }">
@@ -149,9 +149,9 @@ async function openDetails(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)">👁</button>
-          <button v-if="can('merchant.update')" class="icon-btn" title="تعديل" @click="openForm(row)">✏️</button>
-          <button v-if="can('merchant.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)"><Icon name="eye" /></button>
+          <button v-if="can('merchant.update')" class="icon-btn" title="تعديل" @click="openForm(row)"><Icon name="edit" /></button>
+          <button v-if="can('merchant.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>
@@ -221,7 +221,7 @@ async function openDetails(row: any) {
           style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)"
         >
           <span style="font-weight:700;flex:1">{{ s.plan?.name ?? '—' }}</span>
-          <span class="muted num" style="font-size:13px">{{ date(s.starts_at) }} → {{ date(s.ends_at) }}</span>
+          <span class="muted num" style="font-size:13px">{{ date(s.starts_at) }} <Icon name="arrow" /> {{ date(s.ends_at) }}</span>
           <StatusPill :value="s.status" :map="SUBSCRIPTION_STATUS" />
         </div>
 

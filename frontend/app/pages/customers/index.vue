@@ -75,12 +75,12 @@ async function openDetails(row: any) {
   <div>
     <PageHeader title="الزبائن" :subtitle="`${num(customers.meta.total)} زبون`">
       <template #actions>
-        <button v-if="can('customer.create')" class="btn" @click="openForm()">＋ زبون جديد</button>
+        <button v-if="can('customer.create')" class="btn" @click="openForm()"><Icon name="plus" :size="15" /> زبون جديد</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="customers.query.search" class="input input-sm grow" placeholder="🔍 بحث بالاسم، الهاتف، العنوان…">
+      <input v-model="customers.query.search" class="input input-sm grow" placeholder="بحث بالاسم، الهاتف، العنوان…">
 
       <select v-model="customers.query.city_id" class="input input-sm">
         <option value="">كل المدن</option>
@@ -99,7 +99,7 @@ async function openDetails(row: any) {
     <DataTable
       :columns="columns" :rows="customers.items" :loading="customers.loading"
       :sort="customers.query.sort" :dir="customers.query.dir"
-      empty="لا يوجد زبائن مطابقون" empty-icon="👥"
+      empty="لا يوجد زبائن مطابقون" empty-icon="users"
       @sort="customers.sortBy"
     >
       <template #cell-name="{ row }">
@@ -124,9 +124,9 @@ async function openDetails(row: any) {
       <template #cell-created_at="{ row }"><span class="muted" style="font-size:13px">{{ date(row.created_at) }}</span></template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)">👁</button>
-          <button v-if="can('customer.update')" class="icon-btn" title="تعديل" @click="openForm(row)">✏️</button>
-          <button v-if="can('customer.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)"><Icon name="eye" /></button>
+          <button v-if="can('customer.update')" class="icon-btn" title="تعديل" @click="openForm(row)"><Icon name="edit" /></button>
+          <button v-if="can('customer.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

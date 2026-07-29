@@ -105,8 +105,8 @@ async function removePlan(row: any) {
   <div>
     <PageHeader title="الاشتراكات" subtitle="اشتراكات التجّار وباقات المنصّة">
       <template #actions>
-        <button v-if="tab === 'subscriptions' && can('subscription.create')" class="btn" @click="openSub">＋ اشتراك جديد</button>
-        <button v-if="tab === 'plans' && can('subscription.create')" class="btn" @click="openPlan()">＋ باقة جديدة</button>
+        <button v-if="tab === 'subscriptions' && can('subscription.create')" class="btn" @click="openSub"><Icon name="plus" :size="15" /> اشتراك جديد</button>
+        <button v-if="tab === 'plans' && can('subscription.create')" class="btn" @click="openPlan()"><Icon name="plus" :size="15" /> باقة جديدة</button>
       </template>
     </PageHeader>
 
@@ -118,7 +118,7 @@ async function removePlan(row: any) {
     <!-- ── subscriptions ─────────────────────────────────────────────── -->
     <template v-if="tab === 'subscriptions'">
       <div class="toolbar">
-        <input v-model="subs.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم المتجر أو هاتفه…">
+        <input v-model="subs.query.search" class="input input-sm grow" placeholder="بحث باسم المتجر أو هاتفه…">
 
         <select v-model="subs.query.status" class="input input-sm">
           <option value="">كل الحالات</option>
@@ -142,7 +142,7 @@ async function removePlan(row: any) {
       <DataTable
         :columns="subColumns" :rows="subs.items" :loading="subs.loading"
         :sort="subs.query.sort" :dir="subs.query.dir"
-        empty="لا توجد اشتراكات" empty-icon="⭐"
+        empty="لا توجد اشتراكات" empty-icon="star"
         @sort="subs.sortBy"
       >
         <template #cell-merchant="{ row }">
@@ -152,7 +152,7 @@ async function removePlan(row: any) {
         <template #cell-plan="{ row }">{{ row.plan?.name ?? '—' }}</template>
         <template #cell-price="{ row }"><span class="num" style="font-weight:700">{{ money(row.price) }}</span></template>
         <template #cell-period="{ row }">
-          <span class="muted num" style="font-size:13px">{{ date(row.starts_at) }} → {{ date(row.ends_at) }}</span>
+          <span class="muted num" style="font-size:13px">{{ date(row.starts_at) }} <Icon name="arrow" /> {{ date(row.ends_at) }}</span>
         </template>
         <template #cell-days_left="{ row }">
           <span
@@ -163,8 +163,8 @@ async function removePlan(row: any) {
         <template #cell-status="{ row }"><StatusPill :value="row.status" :map="SUBSCRIPTION_STATUS" /></template>
         <template #cell-actions="{ row }">
           <div class="row-actions">
-            <button v-if="can('subscription.create')" class="icon-btn" title="تجديد" @click="renew(row)">🔄</button>
-            <button v-if="can('subscription.update') && row.status === 'active'" class="icon-btn danger" title="إلغاء" @click="cancelSub(row)">✕</button>
+            <button v-if="can('subscription.create')" class="icon-btn" title="تجديد" @click="renew(row)"><Icon name="refresh" /></button>
+            <button v-if="can('subscription.update') && row.status === 'active'" class="icon-btn danger" title="إلغاء" @click="cancelSub(row)"><Icon name="x" /></button>
           </div>
         </template>
       </DataTable>
@@ -175,7 +175,7 @@ async function removePlan(row: any) {
     <!-- ── plans ─────────────────────────────────────────────────────── -->
     <template v-else>
       <div class="toolbar">
-        <input v-model="plans.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم الباقة…">
+        <input v-model="plans.query.search" class="input input-sm grow" placeholder="بحث باسم الباقة…">
         <select v-model="plans.query.is_active" class="input input-sm">
           <option value="">الكل</option>
           <option value="1">مفعّلة</option>
@@ -186,7 +186,7 @@ async function removePlan(row: any) {
       <DataTable
         :columns="planColumns" :rows="plans.items" :loading="plans.loading"
         :sort="plans.query.sort" :dir="plans.query.dir"
-        empty="لا توجد باقات" empty-icon="⭐"
+        empty="لا توجد باقات" empty-icon="star"
         @sort="plans.sortBy"
       >
         <template #cell-name="{ row }">
@@ -210,8 +210,8 @@ async function removePlan(row: any) {
         </template>
         <template #cell-actions="{ row }">
           <div class="row-actions">
-            <button v-if="can('subscription.update')" class="icon-btn" title="تعديل" @click="openPlan(row)">✏️</button>
-            <button v-if="can('subscription.delete')" class="icon-btn danger" title="حذف" @click="removePlan(row)">🗑</button>
+            <button v-if="can('subscription.update')" class="icon-btn" title="تعديل" @click="openPlan(row)"><Icon name="edit" /></button>
+            <button v-if="can('subscription.delete')" class="icon-btn danger" title="حذف" @click="removePlan(row)"><Icon name="trash" /></button>
           </div>
         </template>
       </DataTable>

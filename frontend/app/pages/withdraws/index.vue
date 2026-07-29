@@ -31,7 +31,7 @@ async function setStatus(row: any, status: string) {
   const danger = status === 'rejected'
   const ok = await confirm({
     title: `${danger ? 'رفض' : 'تأكيد'} طلب السحب؟`,
-    text: `${row.requester?.name ?? ''} — ${money(row.amount)} → ${label}`
+    text: `${row.requester?.name ?? ''} — ${money(row.amount)} <Icon name="arrow" /> ${label}`
       + (status === 'paid' ? '\nسيُخصم المبلغ من رصيد الحساب.' : ''),
     danger,
     confirmText: label,
@@ -83,12 +83,12 @@ const totals = computed(() => ({
   <div>
     <PageHeader title="السحوبات" :subtitle="`${num(withdraws.meta.total)} طلب سحب`">
       <template #actions>
-        <button v-if="can('withdraw.create')" class="btn" @click="openForm">＋ طلب سحب</button>
+        <button v-if="can('withdraw.create')" class="btn" @click="openForm"><Icon name="plus" :size="15" /> طلب سحب</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="withdraws.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم الحساب أو رقمه…">
+      <input v-model="withdraws.query.search" class="input input-sm grow" placeholder="بحث باسم الحساب أو رقمه…">
 
       <select v-model="withdraws.query.status" class="input input-sm">
         <option value="">كل الحالات</option>
@@ -116,7 +116,7 @@ const totals = computed(() => ({
     <DataTable
       :columns="columns" :rows="withdraws.items" :loading="withdraws.loading"
       :sort="withdraws.query.sort" :dir="withdraws.query.dir"
-      empty="لا توجد طلبات سحب" empty-icon="💵"
+      empty="لا توجد طلبات سحب" empty-icon="cash"
       @sort="withdraws.sortBy"
     >
       <template #cell-requester="{ row }">
@@ -148,7 +148,7 @@ const totals = computed(() => ({
           >
             {{ WITHDRAW_STATUS[s][0] }}
           </button>
-          <button v-if="can('withdraw.delete') && row.status !== 'paid'" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('withdraw.delete') && row.status !== 'paid'" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

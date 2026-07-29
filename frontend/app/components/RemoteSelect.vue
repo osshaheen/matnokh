@@ -74,7 +74,7 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
   <div ref="root" style="position:relative">
     <div v-if="modelValue && selectedLabel" class="input" style="display:flex;align-items:center;gap:8px">
       <span style="flex:1;font-weight:700;color:var(--head);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ selectedLabel }}</span>
-      <button type="button" class="muted" style="font-size:16px" :disabled="disabled" @click="clear">✕</button>
+      <button type="button" class="muted" style="font-size:16px" :disabled="disabled" @click="clear"><Icon name="x" /></button>
     </div>
 
     <input

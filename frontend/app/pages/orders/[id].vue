@@ -132,12 +132,12 @@ const rows = computed(() => order.value ? [
     <template v-else-if="order">
       <PageHeader :title="`الطلب ${order.order_no}`" :subtitle="dateTime(order.created_at)" back="/orders">
         <template #actions>
-          <button v-if="can('order.update')" class="btn btn-ghost" @click="openEdit">✏️ تعديل</button>
+          <button v-if="can('order.update')" class="btn btn-ghost" @click="openEdit"><Icon name="edit" /> تعديل</button>
           <button
             v-if="can('order.update') && !['delivered', 'canceled', 'returned'].includes(order.status)"
             class="btn btn-ghost" @click="showAssign = true"
           >
-            🚗 {{ order.driver ? 'تغيير السائق' : 'تعيين سائق' }}
+            <Icon name="car" /> {{ order.driver ? 'تغيير السائق' : 'تعيين سائق' }}
           </button>
         </template>
       </PageHeader>
@@ -168,7 +168,7 @@ const rows = computed(() => order.value ? [
           <div style="display:flex;flex-direction:column;gap:14px">
             <div style="display:flex;align-items:center;gap:11px">
               <div style="width:38px;height:38px;border-radius:12px;background:var(--grad-blue);display:flex;
-                   align-items:center;justify-content:center;font-size:17px">👤</div>
+                   align-items:center;justify-content:center;font-size:17px"><Icon name="user" /></div>
               <div style="min-width:0;flex:1">
                 <div class="muted" style="font-size:12px">الزبون</div>
                 <div style="font-weight:700;color:var(--head)">{{ order.customer?.name ?? '—' }}</div>
@@ -178,7 +178,7 @@ const rows = computed(() => order.value ? [
 
             <div style="display:flex;align-items:center;gap:11px">
               <div style="width:38px;height:38px;border-radius:12px;background:var(--grad-terra);display:flex;
-                   align-items:center;justify-content:center;font-size:17px">🏪</div>
+                   align-items:center;justify-content:center;font-size:17px"><Icon name="store" /></div>
               <div style="min-width:0;flex:1">
                 <div class="muted" style="font-size:12px">المتجر</div>
                 <div style="font-weight:700;color:var(--head)">{{ order.merchant?.name ?? '—' }}</div>
@@ -188,7 +188,7 @@ const rows = computed(() => order.value ? [
 
             <div style="display:flex;align-items:center;gap:11px">
               <div style="width:38px;height:38px;border-radius:12px;background:var(--grad-green);display:flex;
-                   align-items:center;justify-content:center;font-size:17px">🚗</div>
+                   align-items:center;justify-content:center;font-size:17px"><Icon name="car" /></div>
               <div style="min-width:0;flex:1">
                 <div class="muted" style="font-size:12px">السائق</div>
                 <div style="font-weight:700;color:var(--head)">{{ order.driver?.name ?? 'غير معيّن' }}</div>
@@ -273,7 +273,7 @@ const rows = computed(() => order.value ? [
       </div>
     </template>
 
-    <EmptyState v-else icon="📦" title="الطلب غير موجود" text="ربما حُذف أو أن الرابط غير صحيح" />
+    <EmptyState v-else icon="box" title="الطلب غير موجود" text="ربما حُذف أو أن الرابط غير صحيح" />
 
     <!-- ── assign driver ─────────────────────────────────────────────── -->
     <AppModal v-model="showAssign" title="تعيين سائق" subtitle="سيتم إشعار السائق بالطلب">

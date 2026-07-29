@@ -71,12 +71,12 @@ async function remove(row: any) {
   <div>
     <PageHeader title="الإشعارات" :subtitle="`${num(notifications.meta.total)} إشعار`">
       <template #actions>
-        <button v-if="can('notification.create')" class="btn" @click="open()">＋ إشعار جديد</button>
+        <button v-if="can('notification.create')" class="btn" @click="open()"><Icon name="plus" :size="15" /> إشعار جديد</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="notifications.query.search" class="input input-sm grow" placeholder="🔍 بحث بالعنوان أو النص…">
+      <input v-model="notifications.query.search" class="input input-sm grow" placeholder="بحث بالعنوان أو النص…">
 
       <select v-model="notifications.query.status" class="input input-sm">
         <option value="">كل الحالات</option>
@@ -94,7 +94,7 @@ async function remove(row: any) {
     <DataTable
       :columns="columns" :rows="notifications.items" :loading="notifications.loading"
       :sort="notifications.query.sort" :dir="notifications.query.dir"
-      empty="لا توجد إشعارات" empty-icon="🔔"
+      empty="لا توجد إشعارات" empty-icon="bell"
       @sort="notifications.sortBy"
     >
       <template #cell-title="{ row }">
@@ -113,8 +113,8 @@ async function remove(row: any) {
             v-if="can('notification.create') && row.status === 'draft'"
             class="btn btn-sm" :disabled="notifications.saving" @click="send(row)"
           >إرسال</button>
-          <button v-if="can('notification.update') && row.status === 'draft'" class="icon-btn" title="تعديل" @click="open(row)">✏️</button>
-          <button v-if="can('notification.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('notification.update') && row.status === 'draft'" class="icon-btn" title="تعديل" @click="open(row)"><Icon name="edit" /></button>
+          <button v-if="can('notification.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

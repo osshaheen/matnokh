@@ -5,7 +5,7 @@ defineProps<{ title: string; subtitle?: string; back?: string }>()
 <template>
   <div class="page-head">
     <div style="min-width:0">
-      <NuxtLink v-if="back" :to="back" class="muted" style="font-size:13px;font-weight:700">→ رجوع</NuxtLink>
+      <NuxtLink v-if="back" :to="back" class="muted" style="font-size:13px;font-weight:700"><Icon name="arrow" /> رجوع</NuxtLink>
       <h1 class="page-title">{{ title }}</h1>
       <p v-if="subtitle" class="muted" style="font-size:14px">{{ subtitle }}</p>
     </div>

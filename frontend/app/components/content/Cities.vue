@@ -46,19 +46,19 @@ async function remove(row: any) {
 <template>
   <div>
     <div class="toolbar">
-      <input v-model="cities.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم المدينة…">
+      <input v-model="cities.query.search" class="input input-sm grow" placeholder="بحث باسم المدينة…">
       <select v-model="cities.query.is_active" class="input input-sm">
         <option value="">الكل</option>
         <option value="1">مفعّلة</option>
         <option value="0">معطّلة</option>
       </select>
-      <button v-if="can('city.create')" class="btn btn-sm" style="margin-right:auto" @click="open()">＋ مدينة جديدة</button>
+      <button v-if="can('city.create')" class="btn btn-sm" style="margin-right:auto" @click="open()"><Icon name="plus" :size="15" /> مدينة جديدة</button>
     </div>
 
     <DataTable
       :columns="columns" :rows="cities.items" :loading="cities.loading"
       :sort="cities.query.sort" :dir="cities.query.dir"
-      empty="لا توجد مدن" empty-icon="🏙️" @sort="cities.sortBy"
+      empty="لا توجد مدن" empty-icon="city" @sort="cities.sortBy"
     >
       <template #cell-name="{ row }">
         <div style="font-weight:700;color:var(--head)">{{ row.name }}</div>
@@ -74,8 +74,8 @@ async function remove(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button v-if="can('city.update')" class="icon-btn" title="تعديل" @click="open(row)">✏️</button>
-          <button v-if="can('city.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('city.update')" class="icon-btn" title="تعديل" @click="open(row)"><Icon name="edit" /></button>
+          <button v-if="can('city.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

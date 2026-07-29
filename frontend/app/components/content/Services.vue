@@ -44,24 +44,24 @@ async function remove(row: any) {
 <template>
   <div>
     <div class="toolbar">
-      <input v-model="services.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم الخدمة…">
+      <input v-model="services.query.search" class="input input-sm grow" placeholder="بحث باسم الخدمة…">
       <select v-model="services.query.is_active" class="input input-sm">
         <option value="">الكل</option>
         <option value="1">مفعّلة</option>
         <option value="0">معطّلة</option>
       </select>
-      <button v-if="can('service.create')" class="btn btn-sm" style="margin-right:auto" @click="open()">＋ خدمة جديدة</button>
+      <button v-if="can('service.create')" class="btn btn-sm" style="margin-right:auto" @click="open()"><Icon name="plus" :size="15" /> خدمة جديدة</button>
     </div>
 
     <DataTable
       :columns="columns" :rows="services.items" :loading="services.loading"
       :sort="services.query.sort" :dir="services.query.dir"
-      empty="لا توجد خدمات" empty-icon="🧰" @sort="services.sortBy"
+      empty="لا توجد خدمات" empty-icon="toolbox" @sort="services.sortBy"
     >
       <template #cell-name="{ row }">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:34px;height:34px;border-radius:11px;background:var(--card2);display:flex;
-               align-items:center;justify-content:center;font-size:18px">{{ row.icon || '🧰' }}</div>
+               align-items:center;justify-content:center;font-size:18px;color:var(--green)"><span v-if="row.icon">{{ row.icon }}</span><Icon v-else name="toolbox" /></div>
           <div style="min-width:0">
             <div style="font-weight:700;color:var(--head)">{{ row.name }}</div>
             <div class="muted" style="font-size:12px">{{ row.description ?? '' }}</div>
@@ -76,8 +76,8 @@ async function remove(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button v-if="can('service.update')" class="icon-btn" title="تعديل" @click="open(row)">✏️</button>
-          <button v-if="can('service.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('service.update')" class="icon-btn" title="تعديل" @click="open(row)"><Icon name="edit" /></button>
+          <button v-if="can('service.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>
@@ -88,7 +88,7 @@ async function remove(row: any) {
       <form id="service-form" class="form-grid" @submit.prevent="submit">
         <FormField label="اسم الخدمة *"><input v-model="form.name" class="input" required></FormField>
         <FormField label="السعر الأساسي"><input v-model.number="form.base_price" type="number" min="0" step="0.5" class="input" dir="ltr"></FormField>
-        <FormField label="الأيقونة" hint="رمز تعبيري مثل 📦"><input v-model="form.icon" class="input"></FormField>
+        <FormField label="الأيقونة" hint="رمز تعبيري (اختياري)"><input v-model="form.icon" class="input"></FormField>
         <FormField label="ترتيب العرض"><input v-model.number="form.sort" type="number" min="0" class="input" dir="ltr"></FormField>
         <FormField label="الوصف" full><textarea v-model="form.description" class="input" /></FormField>
         <FormField label="الحالة" full><AppSwitch v-model="form.is_active" label="الخدمة مفعّلة" /></FormField>

@@ -36,7 +36,7 @@ onUnmounted(() => {
               <div style="font-weight:800;color:var(--head);font-size:17px">{{ title }}</div>
               <div v-if="subtitle" class="muted" style="font-size:13px">{{ subtitle }}</div>
             </div>
-            <button class="icon-btn" aria-label="إغلاق" @click="close">✕</button>
+            <button class="icon-btn" aria-label="إغلاق" @click="close"><Icon name="x" /></button>
           </div>
 
           <div class="modal-body"><slot /></div>

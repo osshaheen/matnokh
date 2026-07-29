@@ -7,7 +7,7 @@ const { toasts, dismiss } = useToast()
     <div class="toast-host">
       <TransitionGroup name="fade">
         <div v-for="t in toasts" :key="t.id" class="toast" :class="t.kind" @click="dismiss(t.id)">
-          {{ t.kind === 'ok' ? '✓' : '⚠️' }} {{ t.text }}
+          <Icon :name="t.kind === 'ok' ? 'check' : 'alert'" /> {{ t.text }}
         </div>
       </TransitionGroup>
     </div>

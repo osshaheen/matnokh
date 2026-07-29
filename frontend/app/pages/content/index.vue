@@ -32,6 +32,6 @@ const tab = ref(visible.value[0]?.key ?? 'cities')
     <ContentServices v-else-if="tab === 'services'" />
     <ContentBanners v-else-if="tab === 'banners'" />
     <ContentArticles v-else-if="tab === 'articles'" />
-    <EmptyState v-else icon="🔒" title="لا تملك صلاحية عرض هذا القسم" />
+    <EmptyState v-else icon="lock" title="لا تملك صلاحية عرض هذا القسم" />
   </div>
 </template>

@@ -18,13 +18,13 @@ async function submit() {
   <div class="card" style="width:100%;max-width:400px;padding:34px 30px">
     <div style="text-align:center;margin-bottom:26px">
       <div style="width:64px;height:64px;border-radius:20px;background:var(--grad-green);display:flex;
-           align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;font-size:30px">🚚</div>
-      <h1 style="font-size:24px;font-weight:800;color:var(--head)">وصلها</h1>
+           align-items:center;justify-content:center;margin:0 auto 14px;color:#fff;font-size:30px"><Icon name="truck" /></div>
+      <h1 style="font-size:24px;font-weight:800;color:var(--head)">مطنوخ</h1>
       <p class="muted" style="font-size:14px">لوحة التحكم — إدارة المنصّة</p>
     </div>
 
     <div v-if="error" style="background:#f7e2da;color:#a5623f;padding:11px 14px;border-radius:12px;
-         font-size:13px;font-weight:700;margin-bottom:14px;text-align:center">⚠️ {{ error }}</div>
+         font-size:13px;font-weight:700;margin-bottom:14px;text-align:center"><Icon name="alert" /> {{ error }}</div>
 
     <form @submit.prevent="submit" style="display:flex;flex-direction:column;gap:14px">
       <div>

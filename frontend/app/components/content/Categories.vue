@@ -43,24 +43,24 @@ async function remove(row: any) {
 <template>
   <div>
     <div class="toolbar">
-      <input v-model="categories.query.search" class="input input-sm grow" placeholder="🔍 بحث باسم التصنيف…">
+      <input v-model="categories.query.search" class="input input-sm grow" placeholder="بحث باسم التصنيف…">
       <select v-model="categories.query.is_active" class="input input-sm">
         <option value="">الكل</option>
         <option value="1">مفعّل</option>
         <option value="0">معطّل</option>
       </select>
-      <button v-if="can('store_category.create')" class="btn btn-sm" style="margin-right:auto" @click="open()">＋ تصنيف جديد</button>
+      <button v-if="can('store_category.create')" class="btn btn-sm" style="margin-right:auto" @click="open()"><Icon name="plus" :size="15" /> تصنيف جديد</button>
     </div>
 
     <DataTable
       :columns="columns" :rows="categories.items" :loading="categories.loading"
       :sort="categories.query.sort" :dir="categories.query.dir"
-      empty="لا توجد تصنيفات" empty-icon="🏷️" @sort="categories.sortBy"
+      empty="لا توجد تصنيفات" empty-icon="tag" @sort="categories.sortBy"
     >
       <template #cell-name="{ row }">
         <div style="display:flex;align-items:center;gap:10px">
           <div style="width:34px;height:34px;border-radius:11px;background:var(--card2);display:flex;
-               align-items:center;justify-content:center;font-size:18px">{{ row.icon || '🏷️' }}</div>
+               align-items:center;justify-content:center;font-size:18px;color:var(--green)"><span v-if="row.icon">{{ row.icon }}</span><Icon v-else name="tag" /></div>
           <div>
             <div style="font-weight:700;color:var(--head)">{{ row.name }}</div>
             <div class="muted" style="font-size:12px" dir="ltr">{{ row.name_en ?? '' }}</div>
@@ -74,8 +74,8 @@ async function remove(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button v-if="can('store_category.update')" class="icon-btn" title="تعديل" @click="open(row)">✏️</button>
-          <button v-if="can('store_category.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('store_category.update')" class="icon-btn" title="تعديل" @click="open(row)"><Icon name="edit" /></button>
+          <button v-if="can('store_category.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>
@@ -86,7 +86,7 @@ async function remove(row: any) {
       <form id="category-form" class="form-grid" @submit.prevent="submit">
         <FormField label="الاسم بالعربية *"><input v-model="form.name" class="input" required></FormField>
         <FormField label="الاسم بالإنجليزية"><input v-model="form.name_en" class="input" dir="ltr"></FormField>
-        <FormField label="الأيقونة" hint="رمز تعبيري مثل 🍽️"><input v-model="form.icon" class="input"></FormField>
+        <FormField label="الأيقونة" hint="رمز تعبيري (اختياري)"><input v-model="form.icon" class="input"></FormField>
         <FormField label="ترتيب العرض"><input v-model.number="form.sort" type="number" min="0" class="input" dir="ltr"></FormField>
         <FormField label="الحالة" full><AppSwitch v-model="form.is_active" label="التصنيف مفعّل" /></FormField>
       </form>

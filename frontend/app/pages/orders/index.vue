@@ -76,12 +76,12 @@ async function remove(row: any) {
   <div>
     <PageHeader title="الطلبات" :subtitle="`${num(orders.meta.total)} طلب`">
       <template #actions>
-        <button v-if="can('order.create')" class="btn" @click="openForm">＋ طلب جديد</button>
+        <button v-if="can('order.create')" class="btn" @click="openForm"><Icon name="plus" :size="15" /> طلب جديد</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="orders.query.search" class="input input-sm grow" placeholder="🔍 بحث برقم الطلب، الزبون، العنوان…">
+      <input v-model="orders.query.search" class="input input-sm grow" placeholder="بحث برقم الطلب، الزبون، العنوان…">
 
       <select v-model="orders.query.status" class="input input-sm">
         <option value="">كل الحالات</option>
@@ -112,7 +112,7 @@ async function remove(row: any) {
     <DataTable
       :columns="columns" :rows="orders.items" :loading="orders.loading"
       :sort="orders.query.sort" :dir="orders.query.dir"
-      clickable empty="لا توجد طلبات مطابقة للفلاتر" empty-icon="📦"
+      clickable empty="لا توجد طلبات مطابقة للفلاتر" empty-icon="box"
       @sort="orders.sortBy" @row="navigateTo(`/orders/${$event.id}`)"
     >
       <template #cell-order_no="{ row }">
@@ -135,8 +135,8 @@ async function remove(row: any) {
       <template #cell-created_at="{ row }"><span class="muted" style="font-size:13px">{{ dateTime(row.created_at) }}</span></template>
       <template #cell-actions="{ row }">
         <div class="row-actions" @click.stop>
-          <NuxtLink :to="`/orders/${row.id}`" class="icon-btn" title="عرض">👁</NuxtLink>
-          <button v-if="can('order.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <NuxtLink :to="`/orders/${row.id}`" class="icon-btn" title="عرض"><Icon name="eye" /></NuxtLink>
+          <button v-if="can('order.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

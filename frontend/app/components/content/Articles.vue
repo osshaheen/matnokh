@@ -61,19 +61,19 @@ async function remove(row: any) {
 <template>
   <div>
     <div class="toolbar">
-      <input v-model="articles.query.search" class="input input-sm grow" placeholder="🔍 بحث بعنوان المقال…">
+      <input v-model="articles.query.search" class="input input-sm grow" placeholder="بحث بعنوان المقال…">
       <select v-model="articles.query.is_published" class="input input-sm">
         <option value="">الكل</option>
         <option value="1">منشور</option>
         <option value="0">مسوّدة</option>
       </select>
-      <button v-if="can('article.create')" class="btn btn-sm" style="margin-right:auto" @click="open()">＋ مقال جديد</button>
+      <button v-if="can('article.create')" class="btn btn-sm" style="margin-right:auto" @click="open()"><Icon name="plus" :size="15" /> مقال جديد</button>
     </div>
 
     <DataTable
       :columns="columns" :rows="articles.items" :loading="articles.loading"
       :sort="articles.query.sort" :dir="articles.query.dir"
-      empty="لا توجد مقالات" empty-icon="📄" @sort="articles.sortBy"
+      empty="لا توجد مقالات" empty-icon="file" @sort="articles.sortBy"
     >
       <template #cell-title="{ row }">
         <div style="font-weight:700;color:var(--head)">{{ row.title }}</div>
@@ -91,8 +91,8 @@ async function remove(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button v-if="can('article.update')" class="icon-btn" title="تعديل" @click="open(row)">✏️</button>
-          <button v-if="can('article.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button v-if="can('article.update')" class="icon-btn" title="تعديل" @click="open(row)"><Icon name="edit" /></button>
+          <button v-if="can('article.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

@@ -30,17 +30,17 @@ onMounted(load)
 const k = computed(() => data.value?.kpis ?? {})
 
 const kpis = computed(() => [
-  { label: 'طلبات اليوم', value: num(k.value.orders_today ?? 0), icon: '📦', grad: 'var(--grad-green)', hint: `${num(k.value.orders_active ?? 0)} طلب جارٍ` },
-  { label: 'إيراد اليوم', value: money(k.value.revenue_today ?? 0), icon: '💰', grad: 'var(--grad-sand)', hint: `الشهر: ${money(k.value.revenue_month ?? 0)}` },
-  { label: 'السائقون المتاحون', value: `${num(k.value.drivers_available ?? 0)} / ${num(k.value.drivers_total ?? 0)}`, icon: '🚗', grad: 'var(--grad-blue)', hint: '' },
-  { label: 'التجّار النشطون', value: num(k.value.merchants_active ?? 0), icon: '🏪', grad: 'var(--grad-terra)', hint: k.value.merchants_pending ? `${num(k.value.merchants_pending)} بانتظار الاعتماد` : '' },
+  { label: 'طلبات اليوم', value: num(k.value.orders_today ?? 0), icon: 'box', grad: 'var(--grad-green)', hint: `${num(k.value.orders_active ?? 0)} طلب جارٍ` },
+  { label: 'إيراد اليوم', value: money(k.value.revenue_today ?? 0), icon: 'wallet', grad: 'var(--grad-sand)', hint: `الشهر: ${money(k.value.revenue_month ?? 0)}` },
+  { label: 'السائقون المتاحون', value: `${num(k.value.drivers_available ?? 0)} / ${num(k.value.drivers_total ?? 0)}`, icon: 'car', grad: 'var(--grad-blue)', hint: '' },
+  { label: 'التجّار النشطون', value: num(k.value.merchants_active ?? 0), icon: 'store', grad: 'var(--grad-terra)', hint: k.value.merchants_pending ? `${num(k.value.merchants_pending)} بانتظار الاعتماد` : '' },
 ])
 
 const secondary = computed(() => [
-  { label: 'سحوبات معلّقة', value: num(k.value.withdraws_pending ?? 0), sub: money(k.value.withdraws_pending_amount ?? 0), to: '/withdraws', perm: 'withdraw.view', icon: '💵' },
-  { label: 'اشتراكات فعّالة', value: num(k.value.subscriptions_active ?? 0), sub: `${num(k.value.subscriptions_expiring ?? 0)} تنتهي خلال أسبوع`, to: '/subscriptions', perm: 'subscription.view', icon: '⭐' },
-  { label: 'عمولة الشهر', value: money(k.value.commission_month ?? 0), sub: 'من الطلبات المسلّمة', to: '/orders', perm: 'order.view', icon: '📈' },
-  { label: 'إجمالي الزبائن', value: num(k.value.customers_total ?? 0), sub: `${num(k.value.orders_total ?? 0)} طلب إجمالاً`, to: '/customers', perm: 'customer.view', icon: '👥' },
+  { label: 'سحوبات معلّقة', value: num(k.value.withdraws_pending ?? 0), sub: money(k.value.withdraws_pending_amount ?? 0), to: '/withdraws', perm: 'withdraw.view', icon: 'cash' },
+  { label: 'اشتراكات فعّالة', value: num(k.value.subscriptions_active ?? 0), sub: `${num(k.value.subscriptions_expiring ?? 0)} تنتهي خلال أسبوع`, to: '/subscriptions', perm: 'subscription.view', icon: 'star' },
+  { label: 'عمولة الشهر', value: money(k.value.commission_month ?? 0), sub: 'من الطلبات المسلّمة', to: '/orders', perm: 'order.view', icon: 'trend' },
+  { label: 'إجمالي الزبائن', value: num(k.value.customers_total ?? 0), sub: `${num(k.value.orders_total ?? 0)} طلب إجمالاً`, to: '/customers', perm: 'customer.view', icon: 'users' },
 ])
 
 const recentColumns: Column[] = [
@@ -55,14 +55,14 @@ const recentColumns: Column[] = [
 
 <template>
   <div>
-    <PageHeader :title="`مرحباً، ${user?.name || ''} 👋`" subtitle="نظرة عامة على منصّة وصلها">
+    <PageHeader :title="`مرحباً، ${user?.name || ''}`" subtitle="نظرة عامة على منصّة مطنوخ">
       <template #actions>
         <select v-model.number="days" class="input input-sm" style="width:auto">
           <option :value="7">آخر 7 أيام</option>
           <option :value="14">آخر 14 يوم</option>
           <option :value="30">آخر 30 يوم</option>
         </select>
-        <button class="btn btn-ghost btn-sm" :disabled="loading" @click="load">↻ تحديث</button>
+        <button class="btn btn-ghost btn-sm" :disabled="loading" @click="load"><Icon name="refresh" /> تحديث</button>
       </template>
     </PageHeader>
 
@@ -78,7 +78,7 @@ const recentColumns: Column[] = [
         v-for="(s, i) in secondary.filter(x => can(x.perm))" :key="i" :to="s.to"
         class="card" style="padding:16px 18px;display:flex;align-items:center;gap:13px"
       >
-        <div style="font-size:22px">{{ s.icon }}</div>
+        <div style="color:var(--green)"><Icon :name="s.icon" :size="22" /></div>
         <div style="min-width:0;flex:1">
           <div class="num" style="font-size:19px;font-weight:800;color:var(--head)">{{ s.value }}</div>
           <div class="muted" style="font-size:12px">{{ s.label }} · {{ s.sub }}</div>
@@ -137,7 +137,7 @@ const recentColumns: Column[] = [
             <div style="width:27px;height:27px;border-radius:9px;background:var(--card2);display:flex;
                  align-items:center;justify-content:center;font-weight:800;font-size:12px">{{ i + 1 }}</div>
             <div style="flex:1;font-weight:700;font-size:14px;color:var(--head)">{{ d.name }}</div>
-            <div class="muted" style="font-size:13px">⭐ <span class="num">{{ d.rating }}</span></div>
+            <div class="muted" style="font-size:13px"><Icon name="star" /> <span class="num">{{ d.rating }}</span></div>
             <div class="num muted" style="font-size:13px">{{ num(d.orders) }} طلب</div>
           </div>
           <EmptyState v-if="!(data?.top_drivers ?? []).length" text="لا توجد بيانات" />

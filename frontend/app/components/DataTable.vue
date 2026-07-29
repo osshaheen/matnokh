@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{
   empty?: string
   emptyIcon?: string
   clickable?: boolean
-}>(), { empty: 'لا توجد نتائج مطابقة', emptyIcon: '🗂️' })
+}>(), { empty: 'لا توجد نتائج مطابقة', emptyIcon: 'folder' })
 
 const emit = defineEmits<{ (e: 'sort', key: string): void; (e: 'row', row: any): void }>()
 

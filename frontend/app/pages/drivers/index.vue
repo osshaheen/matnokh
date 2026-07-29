@@ -88,12 +88,12 @@ async function openDetails(row: any) {
   <div>
     <PageHeader title="السائقون" :subtitle="`${num(drivers.meta.total)} سائق`">
       <template #actions>
-        <button v-if="can('driver.create')" class="btn" @click="openForm()">＋ سائق جديد</button>
+        <button v-if="can('driver.create')" class="btn" @click="openForm()"><Icon name="plus" :size="15" /> سائق جديد</button>
       </template>
     </PageHeader>
 
     <div class="toolbar">
-      <input v-model="drivers.query.search" class="input input-sm grow" placeholder="🔍 بحث بالاسم، الهاتف، رقم المركبة…">
+      <input v-model="drivers.query.search" class="input input-sm grow" placeholder="بحث بالاسم، الهاتف، رقم المركبة…">
 
       <select v-model="drivers.query.status" class="input input-sm">
         <option value="">كل الحالات</option>
@@ -122,7 +122,7 @@ async function openDetails(row: any) {
     <DataTable
       :columns="columns" :rows="drivers.items" :loading="drivers.loading"
       :sort="drivers.query.sort" :dir="drivers.query.dir"
-      empty="لا يوجد سائقون مطابقون" empty-icon="🚗"
+      empty="لا يوجد سائقون مطابقون" empty-icon="car"
       @sort="drivers.sortBy"
     >
       <template #cell-name="{ row }">
@@ -142,7 +142,7 @@ async function openDetails(row: any) {
       </template>
       <template #cell-orders_count="{ row }"><span class="num">{{ num(row.orders_count ?? 0) }}</span></template>
       <template #cell-balance="{ row }"><span class="num" style="font-weight:700">{{ money(row.balance) }}</span></template>
-      <template #cell-rating="{ row }"><span class="num">⭐ {{ row.rating }}</span></template>
+      <template #cell-rating="{ row }"><span class="num"><Icon name="star" /> {{ row.rating }}</span></template>
       <template #cell-is_available="{ row }">
         <AppSwitch
           :model-value="row.is_available"
@@ -161,9 +161,9 @@ async function openDetails(row: any) {
       </template>
       <template #cell-actions="{ row }">
         <div class="row-actions">
-          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)">👁</button>
-          <button v-if="can('driver.update')" class="icon-btn" title="تعديل" @click="openForm(row)">✏️</button>
-          <button v-if="can('driver.delete')" class="icon-btn danger" title="حذف" @click="remove(row)">🗑</button>
+          <button class="icon-btn" title="التفاصيل" @click="openDetails(row)"><Icon name="eye" /></button>
+          <button v-if="can('driver.update')" class="icon-btn" title="تعديل" @click="openForm(row)"><Icon name="edit" /></button>
+          <button v-if="can('driver.delete')" class="icon-btn danger" title="حذف" @click="remove(row)"><Icon name="trash" /></button>
         </div>
       </template>
     </DataTable>

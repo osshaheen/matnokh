@@ -8,7 +8,7 @@ const { state, answer } = useConfirm()
       <div v-if="state.open" class="modal-backdrop" @click.self="answer(false)">
         <div class="modal" style="max-width:420px">
           <div class="modal-body" style="text-align:center;padding-top:28px">
-            <div style="font-size:38px;margin-bottom:8px">{{ state.options.danger ? '⚠️' : '❓' }}</div>
+            <div style="font-size:38px;margin-bottom:8px"><Icon :name="state.options.danger ? 'alert' : 'help'" /></div>
             <div style="font-weight:800;color:var(--head);font-size:17px">{{ state.options.title }}</div>
             <p v-if="state.options.text" class="muted" style="font-size:14px;margin-top:6px">{{ state.options.text }}</p>
           </div>

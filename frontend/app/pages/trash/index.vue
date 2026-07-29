@@ -122,12 +122,12 @@ async function emptyBucket() {
         <button
           v-if="can('trash.delete') && meta.total" class="btn btn-danger"
           :disabled="busy" @click="emptyBucket"
-        >🗑 تفريغ هذه السلّة</button>
+        ><Icon name="trash" /> تفريغ هذه السلّة</button>
       </template>
     </PageHeader>
 
     <div v-if="!sys.restore_enabled" class="card" style="padding:14px 18px;margin-bottom:16px;background:#f2ead9;border-color:#e6dbc2">
-      <span style="font-weight:700;color:#9c7e4e">⚠️ الاستعادة معطّلة من إعدادات النظام — يمكنك التصفّح فقط.</span>
+      <span style="font-weight:700;color:#9c7e4e"><Icon name="alert" /> الاستعادة معطّلة من إعدادات النظام — يمكنك التصفّح فقط.</span>
     </div>
 
     <div class="tabs" style="overflow-x:auto">
@@ -142,7 +142,7 @@ async function emptyBucket() {
     </div>
 
     <div class="toolbar">
-      <input v-model="search" class="input input-sm grow" placeholder="🔍 بحث ضمن المحذوفات…">
+      <input v-model="search" class="input input-sm grow" placeholder="بحث ضمن المحذوفات…">
     </div>
 
     <div class="card">
@@ -150,7 +150,7 @@ async function emptyBucket() {
         <div v-for="i in 4" :key="i" class="skeleton" style="height:44px" />
       </div>
 
-      <EmptyState v-else-if="!items.length" icon="✨" title="السلّة فارغة" text="لا توجد عناصر محذوفة في هذه الوحدة" />
+      <EmptyState v-else-if="!items.length" icon="sparkles" title="السلّة فارغة" text="لا توجد عناصر محذوفة في هذه الوحدة" />
 
       <div v-else>
         <div
@@ -166,11 +166,11 @@ async function emptyBucket() {
             <button
               v-if="can('trash.update') && sys.restore_enabled"
               class="btn btn-ghost btn-sm" :disabled="busy" @click="restore(row)"
-            >↩ استعادة</button>
+            ><Icon name="undo" /> استعادة</button>
             <button
               v-if="can('trash.delete')" class="icon-btn danger" title="حذف نهائي"
               :disabled="busy" @click="forceDelete(row)"
-            >🗑</button>
+            ><Icon name="trash" /></button>
           </div>
         </div>
       </div>
